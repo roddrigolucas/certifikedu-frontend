@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../node_modules/src/internal/context/token-inline-context.ts"],
+  "sourcesContent": ["// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.\n// SPDX-License-Identifier: Apache-2.0\nimport { createContext, useContext } from 'react';\n\nexport interface TokenInlineContextProps {\n  isInlineToken: boolean;\n}\n\nexport const defaultValue: TokenInlineContextProps = {\n  isInlineToken: false,\n};\n\nexport const TokenInlineContext = createContext<TokenInlineContextProps>(defaultValue);\n\nexport function useTokenInlineContext() {\n  return useContext(TokenInlineContext);\n}\n"],
+  "mappings": ";;;;;;;;AAEA,mBAA0C;AAMnC,IAAM,eAAwC;EACnD,eAAe;;AAGV,IAAM,yBAAqB,4BAAuC,YAAY;AAE/E,SAAU,wBAAqB;AACnC,aAAO,yBAAW,kBAAkB;AACtC;",
+  "names": []
+}

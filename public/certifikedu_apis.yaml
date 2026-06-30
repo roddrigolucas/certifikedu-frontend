@@ -1,0 +1,604 @@
+openapi: 3.0.1
+info:
+  title: School Management API by CertifikEDU
+  version: 1.0.0
+  description: A collection of API endpoints for managing schools, users, abilities, and certificates.
+  contact:
+    name: CertifikEDU Support
+    url: 'https://blog.certifikedu.com'
+    email: support@certifikedu.com
+  license:
+    name: Proprietary
+servers:
+  - url: 'https://api.devcertifikedu.net/api/v1'
+    description: Local server
+
+paths:
+  /create/school:
+    post:
+      summary: Create a new school
+      operationId: createSchool
+      tags:
+        - School
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schoolCnpj:
+                  type: string
+                homepageUrl:
+                  type: string
+                phoneNumber:
+                  type: string
+                description:
+                  type: string
+                email:
+                  type: string
+                name:
+                  type: string
+            examples:  
+              schoolExample:
+                value:  
+                  name: "Sunnydale High School"
+                  email: "contact@sunnydalehigh.edu"
+                  description: "A distinguished school with a focus on science and technology."
+                  phoneNumber: "5511987654321"
+                  homepageUrl: "http://www.sunnydalehigh.edu"
+                  schoolCnpj: "11444777000161"
+      responses:
+        '200':
+          description: School created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/School'
+              examples:  
+                schoolExample:
+                  value:  
+                    name: "Sunnydale High School"
+                    email: "contact@sunnydalehigh.edu"
+                    description: "A distinguished school with a focus on science and technology."
+                    phoneNumber: "5511987654321"
+                    homepageUrl: "http://www.sunnydalehigh.edu"
+                    schoolCnpj: "11444777000161"
+                    createdAt: "09/11/2023"
+                    updatedAt: "09/11/2023"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+
+  /schools:
+    get:
+      summary: Get a list of owned schools
+      operationId: getOwnedSchools
+      tags:
+        - School
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: A list of schools
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/School'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /schools/{CNPJ}:
+    get:
+      summary: Get a school by CPNJ
+      operationId: getSchoolByCPNJ
+      tags:
+        - School
+      parameters:
+        - name: CNPJ
+          in: path
+          required: true
+          schema:
+            type: string
+        - in: header 
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: Details of the school
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/School'
+        '404':
+          description: School not found
+        '401':
+          description: Unauthorized
+
+  /create/user:
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags:
+        - User
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+
+  /users:
+    get:
+      summary: Get a list of associated users
+      operationId: getAssociatedUsers
+      tags:
+        - User
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /user/{CPF}:
+    get:
+      summary: Get user info by document number
+      operationId: getUserInfo
+      tags:
+        - User
+      parameters:
+        - name: CPF
+          in: path
+          required: true
+          schema:
+            type: string
+        - in: header 
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+
+  /add/user/school:
+    patch:
+      summary: Add users to a school
+      operationId: addUsersToSchool
+      tags:
+        - User
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                documentNumbers:
+                  type: array
+                  items:
+                    type: string
+                schoolCnpj:
+                  type: string
+            examples:
+              addUsersExample:
+                value:
+                  documentNumbers:
+                    - "12345678900"
+                    - "98765432100"
+                  schoolCnpj: "12345678000122"
+      responses:
+        '200':
+          description: Users added to the school successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  associated:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  notFound:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: School or User not found
+
+  /create/certificate:
+    post:
+      summary: Create a new certificate
+      operationId: createCertificate
+      tags:
+        - Certificate
+      parameters:  
+        - in: header
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Certificate'
+      responses:
+        '200':
+          description: Certificate created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CertificateResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+
+  /certificates/{CPF}:
+    get:
+      summary: Get certificate info by CPF
+      operationId: getCertificateByCPF
+      tags:
+        - Certificate
+      parameters:
+        - name: CPF
+          in: path
+          required: true
+          schema:
+            type: string
+        - in: header 
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: Certificate information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CertificateResponse'
+        '404':
+          description: Certificate not found
+        '401':
+          description: Unauthorized
+
+  /school/certificates/{CNPJ}:
+    get:
+      summary: Get certificate info by CNPJ
+      operationId: getCertificateByCNPJ
+      tags:
+        - Certificate
+      parameters:
+        - name: CNPJ
+          in: path
+          required: true
+          schema:
+            type: string
+        - in: header 
+          name: ce-api-key
+          required: true
+          schema:
+            type: string
+          description: Client API key for access
+      responses:
+        '200':
+          description: Certificate information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CertificateResponse'
+        '404':
+          description: Certificate not found
+        '401':
+          description: Unauthorized
+
+components:
+  schemas:
+    School:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Instituicao 1" 
+        email:
+          type: string
+          example: "instituicao@example.com" 
+        description:
+          type: string
+          example: "Escola Cadastrada" 
+        phoneNumber:
+          type: string
+          example: "5511999988888" 
+        homepageUrl:
+          type: string
+          example: "example.com" 
+        schoolCnpj:
+          type: string
+          example: "1111111111111" 
+        createdAt:
+          type: string
+          example: "09/11/2023" 
+        updatedAt:
+          type: string
+          example: "09/11/2023" 
+          
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Ana Silva" 
+        email:
+          type: string
+          example: "user@example.com" 
+        documentNumber:
+          type: string
+          example: "11111111111" 
+        associatedSchools:
+          type: array
+          items:
+            type: string
+            example: "1234567890001"
+    
+    NewUser:
+      type: object
+      properties:
+        documentNumber:
+          type: string
+          example: "11111111111" 
+        email:
+          type: string
+          example: "user@example.com" 
+        schoolCnpj:
+          type: string
+          example: "11444777000161" 
+        pfInfo:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Ana Silva" 
+            phoneNumber:
+              type: string
+              example: "5511999988888" 
+            DOB:
+              type: string
+              format: date
+              example: "31/12/2023" 
+            cepNumber:
+              type: string
+              example: "12345678" 
+            state:
+              type: string
+              example: "SP"
+            city:
+              type: string
+              example: "São Paulo" 
+            region:
+              type: string
+              example: "Southeast" 
+            street:
+              type: string
+              example: "Av. Paulista" 
+            houseNumber:
+              type: string
+              example: "1000" 
+            complement:
+              type: string
+              example: "Apt 101" 
+
+    Ability:
+      type: object
+      properties:
+        ability:
+          type: string
+          example: "Gestão de grupos de TI"
+        category:
+          example: "Gestão de pessoas"
+          type: string
+
+    Narrative:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date
+          example: "2023-11-09T17:52:41.328Z"
+        updatedAt:
+          example: "2023-11-09T17:52:41.328Z"
+          type: string
+          format: date
+        narrativeUrl:
+          example: "certifikedu.com/link_to_narrative"
+          type: string
+        updatednarrativeType:
+          example: "json"
+          type: string
+
+    Evidence:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date
+          example: "2023-11-09T17:52:41.328Z"
+        updatedAt:
+          example: "2023-11-09T17:52:41.328Z"
+          type: string
+          format: date
+        narrativeUrl:
+          example: "certifikedu.com/link_to_evidence"
+          type: string
+        updatednarrativeType:
+          example: "pdf"
+          type: string
+
+    Certificate:
+      type: object
+      properties:
+        receptorDoc:
+          type: string
+          example: "11111111111"
+        name:
+          type: string
+          example: "Ana Silva"
+        description:
+          type: string
+          example: "Esse certificado garante que o aluno ..."
+        hoursWorkload:
+          type: string
+          example: "22"
+          format: string
+        abilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ability'
+        schoolCnpj:
+          type: string
+          example: "11444777000161"
+        issueDate:
+          type: string
+          format: date
+          example: "31/12/2023"
+        expirationDate:
+          type: string
+          format: date
+          example: "31/12/2050"
+
+
+    CertificateResponse:
+      type: object
+      properties:
+        receptorDoc:
+          type: string
+          example: "11111111111"
+        name:
+          type: string
+          example: "Ana Silva"
+        description:
+          type: string
+          example: "Esse certificado garante que o aluno ..."
+        hoursWorkload:
+          type: string
+          example: "22h"
+          format: string
+        abilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ability'
+        schoolCnpj:
+          type: string
+          example: "11444777000161"
+        issueDate:
+          type: string
+          format: date
+          example: "31/12/2023"
+        expirationDate:
+          type: string
+          format: date
+          example: "31/12/2050"
+        blockchain:
+          type: boolean
+          example: false
+        openBadge:
+          type: boolean
+          example: false
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evidence'
+        narrative:
+          type: array
+          items:
+            $ref: '#/components/schemas/Narrative'
