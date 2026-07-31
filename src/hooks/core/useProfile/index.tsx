@@ -244,7 +244,7 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
   const isUserEnabled =
     profileInfo?.status === EUserStatus.ENABLED || profileInfo?.status === EUserStatus.ADMIN;
 
-  const isNaturalPerson = profileInfo?.type === 'PF' && (profileInfo?.pjs?.length ?? 0) > 0;
+  const isNaturalPerson = profileInfo?.type === 'PF' && ((profileInfo?.pjs?.length ?? 0) > 0 || profileInfo?.status === EUserStatus.ADMIN);
 
   const balance = profileCredits?.monthSpentCredits ?? 0;
   const total =
