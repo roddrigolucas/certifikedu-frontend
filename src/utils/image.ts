@@ -4,6 +4,10 @@ export function getImageUrl(src: string) {
   // If the src already starts with http, return it as is
   if (src.startsWith('http')) return src;
 
-  // Serve from the local public directory
+  if (src.startsWith('users/') || src.startsWith('companies/') || src.startsWith('platforms/')) {
+    return `${import.meta.env.VITE_API_URL}/s3/serve-images-plataform-prod/${src}`;
+  }
+
+  // Serve static images from the local public directory
   return `/${src}`;
 }
