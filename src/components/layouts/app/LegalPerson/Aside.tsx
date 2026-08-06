@@ -81,7 +81,7 @@ export function Aside() {
   }, [handleScroll]);
 
   return (
-    <aside className="bg-darkGray fixed left-0 top-0 z-10 hidden size-full max-h-screen max-w-xs flex-col justify-between gap-8 px-4 pb-8 pt-16 md:flex">
+    <aside className="bg-ecstasy-50 fixed left-0 top-0 z-10 hidden size-full max-h-screen max-w-xs flex-col justify-between gap-8 px-4 pb-8 pt-16 md:flex">
       <div ref={scrollRef} className="flex h-full flex-col gap-8 overflow-y-auto">
         <Logo path={'images/logo_text_color.svg'} />
         {isNaturalPerson && <SelectAccount />}

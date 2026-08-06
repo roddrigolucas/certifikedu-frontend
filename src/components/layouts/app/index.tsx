@@ -175,7 +175,7 @@ export const ApplicationLayout = ({
         <div
           className={cn('col-span-12 size-full bg-blue-zodiac-950 md:p-2 md:pt-3', {
             'bg-blue-zodiac-950': !isLegalPerson,
-            'bg-darkGray': isPJLayout,
+            'bg-ecstasy-50': isPJLayout,
             'bg-slate-950': isAdminSelected,
             'bg-emerald-950': isCanvas,
           })}
