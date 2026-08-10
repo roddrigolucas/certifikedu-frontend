@@ -22,6 +22,7 @@ export interface IReportsMetrics {
 const GetMetrics = async (pjId: string): Promise<IReportsMetrics> => {
   try {
     const response = await authApi.get<IReportsMetrics>(ReportsEndpoints.GetMetrics(pjId));
+
     return response.data;
   } catch (error) {
     throw new Error('Error getting reports metrics');
