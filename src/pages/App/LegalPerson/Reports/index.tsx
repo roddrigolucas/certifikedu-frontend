@@ -6,13 +6,30 @@ import {
   FilterIcon,
   GraduationCapIcon,
   LayoutListIcon,
+  AlertTriangleIcon
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { ApplicationLayout } from '@/components/layouts/app';
 import { CardInformation } from '@/components/pages/Authentication/CardInformation';
 import { Button } from '@/components/shared/ui/button';
+import useProfile from '@/hooks/core/useProfile';
+import useRequestProcessor from '@/hooks/core/useRequest';
+import { ReportsService } from '@/services/entities/app/legalPerson/reports';
 
 export default function ReportsPage() {
+  const { selectedPJ } = useProfile();
+
+  const { data, isLoading } = useRequestProcessor().query(
+    ['reports_metrics_pj', `PJ: ${selectedPJ?.pjId}`],
+    async () => await ReportsService.GetMetrics(selectedPJ?.pjId ?? ''),
+    {
+      onError: (error: any) => {
+        toast.error(`${error}`);
+      },
+    },
+  );
+
   return (
     <ApplicationLayout icon={LayoutListIcon} title="Relatórios" hideCredits>
       <div className="flex flex-col gap-4">
@@ -34,54 +51,28 @@ export default function ReportsPage() {
         </header>
         <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-4">
           <CardInformation
+            title="Certificados Cadastrados"
+            value={data?.certificadosCadastrados?.toString() ?? '0'}
+            icon={FileBadgeIcon}
+            isLoading={isLoading}
+          />
+          <CardInformation
             title="Certificados Emitidos"
-            value="0"
+            value={data?.certificadosEmitidos?.toString() ?? '0'}
             icon={ArrowUpDownIcon}
-            isLoading={false}
+            isLoading={isLoading}
           />
           <CardInformation
             title="Número de Alunos"
-            value="0"
+            value={data?.numeroAlunos?.toString() ?? '0'}
             icon={GraduationCapIcon}
-            isLoading={false}
+            isLoading={isLoading}
           />
           <CardInformation
-            title="Certificados Cadastrados"
-            value="0"
-            icon={FileBadgeIcon}
-            isLoading={false}
-          />
-          <CardInformation
-            title="Certificados Cadastrados"
-            value="0"
-            icon={FileBadgeIcon}
-            isLoading={false}
-          />
-        </div>
-        <div className="grid w-full grid-cols-2 gap-4">
-          <CardInformation
-            title="Certificados Emitidos"
-            value="0"
-            icon={ArrowUpDownIcon}
-            isLoading={false}
-          />
-          <CardInformation
-            title="Número de Alunos"
-            value="0"
-            icon={GraduationCapIcon}
-            isLoading={false}
-          />
-          <CardInformation
-            title="Certificados Cadastrados"
-            value="0"
-            icon={FileBadgeIcon}
-            isLoading={false}
-          />
-          <CardInformation
-            title="Certificados Cadastrados"
-            value="0"
-            icon={FileBadgeIcon}
-            isLoading={false}
+            title="Erros de Emissão"
+            value={data?.errosEmissao?.toString() ?? '0'}
+            icon={AlertTriangleIcon}
+            isLoading={isLoading}
           />
         </div>
       </div>

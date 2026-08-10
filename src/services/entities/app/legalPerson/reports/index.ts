@@ -12,6 +12,23 @@ const GetReportUrl = async (pjId: string): Promise<string> => {
   }
 };
 
+export interface IReportsMetrics {
+  certificadosCadastrados: number;
+  certificadosEmitidos: number;
+  numeroAlunos: number;
+  errosEmissao: number;
+}
+
+const GetMetrics = async (pjId: string): Promise<IReportsMetrics> => {
+  try {
+    const response = await authApi.get<IReportsMetrics>(ReportsEndpoints.GetMetrics(pjId));
+    return response.data;
+  } catch (error) {
+    throw new Error('Error getting reports metrics');
+  }
+};
+
 export const ReportsService = {
   GetReportUrl,
+  GetMetrics,
 };
