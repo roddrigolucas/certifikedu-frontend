@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { DownloadCloud } from 'lucide-react';
+import { DownloadCloud, KeyRound } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { PuffLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -38,6 +38,7 @@ import {
 } from '@/utils/validation/format';
 
 import { UpdateUserInfoDialog } from '../UpdateUserInfoDialog';
+import { ChangePasswordDialog } from '../ChangePasswordDialog';
 
 type UpdatedInfo = {
   fieldName: string;
@@ -54,6 +55,7 @@ interface InterfaceProfile {
 export default function ProfileTab({ isCPF, level, setCreated }: Readonly<InterfaceProfile>) {
   const { profileData, isLegalPerson, UpdateCredits } = useProfile();
   const [isOpen, setIsOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [changedValues, setChangedValues] = useState<INaturalPersonUpdate>({});
   const [oldAndNewValue, setOldAndNewValue] = useState<Array<UpdatedInfo>>([]);
   const [isAddressLoading, setIsAddressLoading] = useState(false);
@@ -369,6 +371,15 @@ export default function ProfileTab({ isCPF, level, setCreated }: Readonly<Interf
         </div>
         <div className="mt-12 flex w-full flex-col-reverse justify-end gap-2 md:flex-row">
           <Button
+            type="button"
+            variant="outline"
+            className="w-full md:w-fit border-slate-200 text-slate-700 hover:bg-slate-50"
+            onClick={() => setIsChangePasswordOpen(true)}
+          >
+            <KeyRound className="mr-2 size-5 text-slate-500" />
+            Alterar Senha
+          </Button>
+          <Button
             disabled={!form.formState.isDirty || form.formState.isSubmitting}
             type="submit"
             variant="success"
@@ -383,6 +394,10 @@ export default function ProfileTab({ isCPF, level, setCreated }: Readonly<Interf
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             changedValues={changedValues}
+          />
+          <ChangePasswordDialog
+            isOpen={isChangePasswordOpen}
+            setIsOpen={setIsChangePasswordOpen}
           />
         </div>
       </form>
