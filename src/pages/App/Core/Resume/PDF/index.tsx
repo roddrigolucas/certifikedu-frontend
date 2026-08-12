@@ -183,11 +183,7 @@ export const ResumePDF = ({
                 <View key={index} style={styles.experienceItem}>
                   <Text style={{ fontWeight: 'bold', fontSize: 12 }}>{exp.title}</Text>
                   <Text style={styles.text}>
-                    {getResumeLabel(exp.workModel, workModelOptions)}
-                  </Text>{' '}
-                  -{' '}
-                  <Text style={styles.text}>
-                    {getResumeLabel(exp.employmentType, employmentTypeOptions)}
+                    {getResumeLabel(exp.workModel, workModelOptions)} - {getResumeLabel(exp.employmentType, employmentTypeOptions)}
                   </Text>
                   <Text style={styles.text}>{exp.companyName}</Text>
                   <Text style={styles.text}>

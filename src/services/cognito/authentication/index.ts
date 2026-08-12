@@ -114,28 +114,27 @@ const authenticateAndStartEmailUpdate = async ({
 }: StartEmailUpdateParameters) => {
   await signIn({ emailAddress, password });
   const token = manageAccessToken.get(ACCESS_TOKEN_KEY);
-  const response = await authHttpClient.patch(
-    '/users/sync/email',
-    { newEmail: newEmailAddress, userId: emailAddress },
+  const response = await authHttpClient.post(
+    '/users/change-email/request',
+    { newEmail: newEmailAddress },
     { headers: { Authorization: `Bearer ${token}` } },
   );
 
   return response.data;
 };
 
-const syncEmailToDatabase = async ({ newEmail, oldEmail }: SyncEmailParameters) => {
-  const token = manageAccessToken.get(ACCESS_TOKEN_KEY);
-  const response = await authHttpClient.patch(
-    '/users/sync/email',
-    { newEmail, userId: oldEmail },
-    { headers: { Authorization: `Bearer ${token}` } },
+const syncEmailToDatabase = async (_params: SyncEmailParameters) => {
+  // Já atualizamos o e-mail no verifyEmailUpdate, então esta sincronização não é mais necessária no backend.
+  return { success: true };
+};
+
+const verifyEmailUpdate = async ({ emailAddress, oldEmailAddress, verificationCode }: VerifyNewEmailParameters) => {
+  const response = await authHttpClient.post(
+    '/auth/change-email/verify',
+    { oldEmail: oldEmailAddress, newEmail: emailAddress, code: verificationCode },
   );
 
   return response.data;
-};
-
-const verifyEmailUpdate = async ({ verificationCode }: VerifyNewEmailParameters) => {
-  return { success: true, code: verificationCode };
 };
 
 const signOut = async () => {

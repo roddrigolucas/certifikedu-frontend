@@ -28,6 +28,7 @@ export interface SyncEmailParameters {
 
 export interface VerifyNewEmailParameters {
   emailAddress: string;
+  oldEmailAddress?: string;
   verificationCode: string;
 }
 

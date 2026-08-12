@@ -46,28 +46,17 @@ export const VerifyNewEmailPage = () => {
     verifyNewEmail(
       {
         emailAddress: newEmailAddress,
+        oldEmailAddress: oldEmailAddress as string,
         verificationCode,
       },
       {
-        onSuccess: async () => {
-          await authenticationService.syncEmailToDatabase({
-            newEmail: newEmailAddress,
-            oldEmail: oldEmailAddress as string,
+        onSuccess: () => {
+          toast.success('E-mail atualizado com sucesso!', {
+            description: `Seu novo e-mail (${newEmailAddress}) foi confirmado.`,
           });
-          try {
-            toast.success('E-mail atualizado com sucesso!', {
-              description: `Seu novo e-mail (${newEmailAddress}) foi confirmado.`,
-            });
-            navigate(buildSignInPageUrl(), { replace: true });
-          } catch (error) {
-            console.error('Erro ao sincronizar BD:', error);
-            toast.error('Alerta! O e-mail foi trocado, mas houve falha na sincronização do BD.');
-            navigate(buildSignInPageUrl(), { replace: true });
-          }
-
           navigate(buildSignInPageUrl(), { replace: true });
         },
-        onError: async (error) => {
+        onError: (error) => {
           toast.error(
             error.message || 'Código inválido ou expirado. Verifique o código e tente novamente.',
           );
