@@ -105,7 +105,7 @@ export const SignInPage = () => {
           whileInView="show"
           viewport={{ once: true }}
         >
-          <h1 className="text-xl font-bold md:text-2xl text-slate-100">Acesse sua conta</h1>
+          <h1 className="text-lg font-bold md:text-xl">Acesse sua conta</h1>
 
           <SignInForm
             emailAddress={emailAddress}
@@ -117,21 +117,21 @@ export const SignInPage = () => {
             errorMessage={signInError?.message}
           />
           <div className="mt-8 inline-flex w-full justify-center">
-            <span className="inline-flex items-center gap-1 text-sm text-slate-300 font-normal">
+            <span className="inline-flex items-center gap-1 text-sm">
               Perdeu acesso ao e-mail?
               <Link
-                className="font-semibold text-[#F59E0B] hover:underline ml-1"
+                className="font-bold text-primary"
                 to={buildResetEmailPageUrl({ emailAddress })}
               >
-                Cadastrar novo e-mail
+                Cadastrar novo email
               </Link>
             </span>
           </div>
           <div className=" inline-flex w-full justify-center">
-            <span className="inline-flex items-center gap-1 text-sm text-slate-300 font-normal">
+            <span className="inline-flex items-center gap-1 text-sm">
               Esqueceu a senha?
               <Link
-                className="font-semibold text-[#F59E0B] hover:underline ml-1"
+                className="font-bold text-primary"
                 to={buildResetPasswordPageUrl({ emailAddress })}
               >
                 Recuperar

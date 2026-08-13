@@ -20,64 +20,34 @@ export const AuthenticationPageLayout = ({ title, children }: Props) => {
     <Fragment>
       <AlertEnv />
       <Helmet>{title && <title>{title} • CertifikEDU</title>}</Helmet>
-      
-      {/* Background container */}
-      <div className="relative flex h-full max-h-screen min-h-screen flex-col overflow-y-scroll bg-[#0A0F1D] text-white md:flex-row md:items-center">
-        
-        {/* Repeating chain watermark background */}
-        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none overflow-hidden">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="chain-pattern" width="160" height="160" patternUnits="userSpaceOnUse">
-                <circle cx="40" cy="40" r="24" stroke="white" stroke-width="2" fill="none" />
-                <line x1="64" y1="40" x2="96" y2="40" stroke="white" stroke-width="2" stroke-dasharray="3,3" />
-                <circle cx="120" cy="40" r="24" stroke="white" stroke-width="2" fill="none" />
-                <line x1="120" y1="64" x2="120" y2="96" stroke="white" stroke-width="2" stroke-dasharray="3,3" />
-                <circle cx="120" cy="120" r="24" stroke="white" stroke-width="2" fill="none" />
-                <line x1="96" y1="120" x2="64" y2="120" stroke="white" stroke-width="2" stroke-dasharray="3,3" />
-                <circle cx="40" cy="120" r="24" stroke="white" stroke-width="2" fill="none" />
-                <line x1="40" y1="96" x2="40" y2="64" stroke="white" stroke-width="2" stroke-dasharray="3,3" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#chain-pattern)" />
-          </svg>
-        </div>
-
-        {/* Left Column (Avatar and Title) */}
-        <div className="relative z-10 flex h-auto min-h-[60vh] flex-col justify-between p-8 md:h-screen md:w-[50vw] md:p-16">
-          <div className="w-fit">
-            <Logo path={'images/logo_text.svg'} className="h-8 md:h-10" />
+      <div className="flex h-full max-h-screen min-h-screen flex-col overflow-y-scroll bg-white md:flex-row md:items-center ">
+        <div className="relative h-60 md:h-screen md:w-[40vw] md:p-0">
+          <div className="absolute left-6 top-16 z-20 mx-auto md:left-16">
+            <Logo path={'images/logo_text.svg'} className="h-8 md:h-12" />
           </div>
-          
-          <figure className="relative flex flex-1 items-center justify-center py-6 md:py-0">
+          <figure className="relative size-full overflow-hidden border-blue-zodiac-900/10 md:block md:rounded-3xl md:border-8">
             <img
               src={getImageUrl('images/login_image.jpg')}
-              alt="CertifikEDU Avatar"
-              className="max-h-[40vh] md:max-h-[55vh] w-auto object-contain"
+              alt="Student Holding a book"
+              className="h-96 w-screen object-cover object-top md:h-screen"
             />
+            <div className="absolute left-0 top-0 size-full bg-gradient-to-b from-[rgba(24,24,44,0.8)] via-[rgba(16,25,51,0.8)] to-[rgba(19,22,58,0.82)]" />
           </figure>
-          
-          <p className="text-xl font-light text-white md:text-3xl lg:text-4xl md:leading-[130%] text-center md:text-left">
-            Eleve seu portfólio com uma carteira digital de{' '}
-            <strong className="font-bold text-[#F59E0B]">competências e habilidades</strong> verificadas.
+          <p className="absolute bottom-6 p-6 text-xl font-light text-white md:bottom-8 md:p-16 md:text-4xl md:leading-[120%]">
+            Tenha uma carteira digital de{' '}
+            <strong className="font-bold">competências e habilidades</strong>.
           </p>
         </div>
-
-        {/* Right Column (Form container) */}
-        <div className="relative z-10 flex h-full justify-center items-center p-6 md:w-[50vw] md:p-0">
-          <article className="w-full rounded-2xl bg-[#0B0F19]/40 backdrop-blur-md border border-slate-800/50 p-8 sm:max-w-[31rem]">
-            {children}
-          </article>
+        <div className="flex h-full justify-center md:w-[55vw]">
+          <article className="container rounded p-6 sm:max-w-[31rem]">{children}</article>
         </div>
       </div>
-
-      {/* Top Right "Quero Testar" CTA */}
-      <div className="relative z-20 flex flex-col items-center justify-center gap-3 bg-transparent px-6 py-4 md:absolute md:right-16 md:top-16 md:flex-row md:p-0">
-        <span className="w-full text-center text-sm text-slate-300 md:text-left">
+      <div className="flex flex-col items-center justify-center gap-3 bg-transparent px-6 md:absolute md:right-16 md:top-16 md:flex-row">
+        <span className="w-full text-center text-sm text-white md:text-left md:text-black">
           Ainda não tem conta?{' '}
         </span>
         <Link to="/authentication/sign-up" className="w-full md:w-fit">
-          <Button className="group w-full pl-6 bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0F1D] font-bold rounded-lg border-none transition-all duration-300 md:w-fit">
+          <Button variant="outline" className="group w-full pl-6 text-white md:w-fit md:text-black">
             Quero Testar
             <ChevronRight className="ease ml-1 size-5 transition-transform duration-500 group-hover:translate-x-1" />
           </Button>
