@@ -17,16 +17,12 @@ export function getImageUrl(src: string) {
     return src;
   }
 
-  const s3Prefixes = [
-    'users/', 'companies/', 'platforms/', 'open_badges/', 
-    'public_templates/', 'public_certificates/', 'background_images/', 
-    'images/', 'files/', 'pj/'
-  ];
-
-  if (s3Prefixes.some(prefix => src.startsWith(prefix))) {
-    return `${import.meta.env.VITE_API_URL}/s3/serve-images-plataform-prod/${src}`;
+  // Static images in the local public directory
+  if (src.startsWith('images/') || src.startsWith('/images/')) {
+    return src.startsWith('/') ? src : `/${src}`;
   }
 
-  // Serve static images from the local public directory
-  return `/${src}`;
+  // All other dynamic image paths (UUIDs, certificates, templates, backgrounds, etc.) come from MinIO
+  const cleanPath = src.startsWith('/') ? src.substring(1) : src;
+  return `${import.meta.env.VITE_API_URL}/s3/serve-images-plataform-prod/${cleanPath}`;
 }
