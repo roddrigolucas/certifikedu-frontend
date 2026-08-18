@@ -13,9 +13,12 @@ import {
   ChevronRightIcon,
   GlobeIcon,
   SchoolIcon,
+  UploadIcon,
+  Loader2,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRef } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { Stepper } from '@/components/core/molecules/Stepper';
@@ -113,8 +116,35 @@ function ResumeCreateForm({
   isEdit: boolean;
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const parsedResume = location.state?.parsedResume;
   const { updateSpecificProfileInfo } = useProfileStore();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      toast.info('Lendo currículo com Inteligência Artificial, por favor aguarde...');
+      const parsedData = await ResumeService.ParseResume(file);
+      
+      form.reset({
+        ...form.getValues(),
+        ...parsedData,
+      });
+
+      toast.success('Currículo processado com sucesso! Revise os campos preenchidos.');
+    } catch (err) {
+      toast.error('Erro ao processar currículo');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const [isCertificateCreationgOpen, setCertificateCreationOpen] = useState(false);
   const [isCertificateCreated, setCertificateIsCreated] = useState<boolean>(false);
@@ -145,8 +175,13 @@ function ResumeCreateForm({
     if (isEdit && existingResume) {
       const mappedValues = mapResumeToFormValues(existingResume);
       form.reset(mappedValues);
+    } else if (parsedResume && !isEdit) {
+      form.reset({
+        ...form.getValues(),
+        ...parsedResume,
+      });
     }
-  }, [isEdit, existingResume, form]);
+  }, [isEdit, existingResume, form, parsedResume]);
 
   const onSubmit = async (values: any) => {
     window.scrollTo({
@@ -183,6 +218,14 @@ function ResumeCreateForm({
 
   return (
     <>
+      <div className="flex justify-end mb-4">
+        <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
+        <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
+          {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}
+          Upload Currículo (Preenchimento IA)
+        </Button>
+      </div>
+
       <Dialog open={isCertificateCreationgOpen} onOpenChange={setCertificateCreationOpen}>
         <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto p-8">
           <DialogHeader>

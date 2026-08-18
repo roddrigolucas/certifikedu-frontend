@@ -9,7 +9,10 @@ import {
   GraduationCapIcon,
   MailIcon,
   PhoneIcon,
+  UploadIcon,
+  Loader2,
 } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -30,6 +33,8 @@ import { LanguageItem } from './LanguageItem';
 export default function ResumeShowPage() {
   const navigate = useNavigate();
   const { profileData } = useProfileStore();
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: resumeList, isLoading: isLoadingResumes } = useQuery(
     ['resumes'],
@@ -45,6 +50,24 @@ export default function ResumeShowPage() {
 
   const handleEdit = () => {
     navigate(`/resumes/edit/${resumeId}`);
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      toast.info('Lendo currículo com Inteligência Artificial, por favor aguarde...');
+      const parsedData = await ResumeService.ParseResume(file);
+      navigate(`/resumes/edit/${resumeId}`, { state: { parsedResume: parsedData } });
+      toast.success('Currículo processado com sucesso! Revise os campos preenchidos.');
+    } catch (err) {
+      toast.error('Erro ao processar currículo');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const { data: resume, isLoading: isLoadingResume } = useQuery(
@@ -76,7 +99,12 @@ export default function ResumeShowPage() {
       {resume && (
         <div className="flex flex-col gap-6 px-4 py-6">
           {/* Actions Section */}
-          <section className="flex justify-end gap-4">
+          <section className="flex justify-end gap-4 flex-wrap">
+            <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
+            <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
+              {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}
+              Upload Currículo (Preenchimento IA)
+            </Button>
             <Button onClick={handleEdit} variant="secondary">
               <EditIcon className="mr-2 size-5" /> Editar Currículo
             </Button>
