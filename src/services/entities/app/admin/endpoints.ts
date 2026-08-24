@@ -9,6 +9,7 @@ export const AdminEnpoints = {
   GetCertificatesById: (id: string) => `${BASE_ENDPOINT}/certificates/user/${id}`,
   UpdateCertificatesById: `${BASE_ENDPOINT}/certificates`,
   UpdateUser: (status: string, id: string) => `${BASE_ENDPOINT}/users/${id}/status/${status}`,
+  DeleteUser: (id: string) => `${BASE_ENDPOINT}/users/${id}`,
   UploadBGImage: `${BASE_ENDPOINT}/backgrounds`,
   DeleteBGImage: (backgroundId: string) => `${BASE_ENDPOINT}/backgrounds/${backgroundId}`,
   EmailTemplate: `${BASE_ENDPOINT}/emails`,

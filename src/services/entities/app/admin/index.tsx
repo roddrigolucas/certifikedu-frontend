@@ -80,6 +80,16 @@ const UpdateUserStatus = async (data: IUpdateUserInfo) => {
   }
 };
 
+const DeleteUser = async (id: string) => {
+  try {
+    const response = await authApi.delete(AdminEnpoints.DeleteUser(id));
+    
+return response.data;
+  } catch (error) {
+    throw new Error('Error deleting user');
+  }
+};
+
 const GetAllCertificatesById = async (id: string) => {
   try {
     const response = await authApi.get(AdminEnpoints.GetCertificatesById(id));
@@ -206,4 +216,5 @@ export const AdminService = {
   CreateAbility,
   UpdateAbility,
   DeleteAbility,
+  DeleteUser,
 };
