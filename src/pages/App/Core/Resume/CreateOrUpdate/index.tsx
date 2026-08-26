@@ -218,7 +218,7 @@ function ResumeCreateForm({
 
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="mb-4 flex justify-end">
         <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
         <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
           {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}

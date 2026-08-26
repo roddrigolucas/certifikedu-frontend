@@ -81,8 +81,8 @@ export function SignInForm({ onSubmit, errorMessage, isSubmitting }: Readonly<Pr
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Senha</FormLabel>
-                <FormControl>
-                  <div className="relative">
+                <div className="relative">
+                  <FormControl>
                     <Input
                       {...field}
                       type={passwordVisibility ? 'text' : 'password'}
@@ -90,21 +90,21 @@ export function SignInForm({ onSubmit, errorMessage, isSubmitting }: Readonly<Pr
                       placeholder="Digite sua senha"
                       className="pr-10"
                     />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      type="button"
-                      className="absolute inset-y-[5px] right-1 size-8"
-                      onClick={() => setPasswordVisibility(!passwordVisibility)}
-                    >
-                      {passwordVisibility ? (
-                        <EyeOffIcon className="size-5 text-slate-500" />
-                      ) : (
-                        <EyeIcon className="size-5 text-slate-500" />
-                      )}
-                    </Button>
-                  </div>
-                </FormControl>
+                  </FormControl>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    type="button"
+                    className="absolute inset-y-[5px] right-1 size-8"
+                    onClick={() => setPasswordVisibility(!passwordVisibility)}
+                  >
+                    {passwordVisibility ? (
+                      <EyeOffIcon className="size-5 text-slate-500" />
+                    ) : (
+                      <EyeIcon className="size-5 text-slate-500" />
+                    )}
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

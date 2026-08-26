@@ -373,7 +373,7 @@ export default function ProfileTab({ isCPF, level, setCreated }: Readonly<Interf
           <Button
             type="button"
             variant="outline"
-            className="w-full md:w-fit border-slate-200 text-slate-700 hover:bg-slate-50"
+            className="w-full border-slate-200 text-slate-700 hover:bg-slate-50 md:w-fit"
             onClick={() => setIsChangePasswordOpen(true)}
           >
             <KeyRound className="mr-2 size-5 text-slate-500" />

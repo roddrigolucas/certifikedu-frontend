@@ -101,20 +101,20 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-700 font-medium">Nova Senha</FormLabel>
+                  <FormLabel className="font-medium text-slate-700">Nova Senha</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         {...field}
                         type={showNewPassword ? 'text' : 'password'}
                         placeholder="Mínimo 6 caracteres"
-                        className="pr-10 bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-primary"
+                        className="border-slate-200 bg-slate-50 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary"
                       />
                       <Button
                         size="icon"
                         variant="ghost"
                         type="button"
-                        className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:text-slate-600 hover:bg-transparent"
+                        className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:bg-transparent hover:text-slate-600"
                         onClick={() => setShowNewPassword(!showNewPassword)}
                       >
                         {showNewPassword ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
@@ -131,20 +131,20 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-700 font-medium">Confirmar Nova Senha</FormLabel>
+                  <FormLabel className="font-medium text-slate-700">Confirmar Nova Senha</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         {...field}
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Repita a nova senha"
-                        className="pr-10 bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-primary"
+                        className="border-slate-200 bg-slate-50 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary"
                       />
                       <Button
                         size="icon"
                         variant="ghost"
                         type="button"
-                        className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:text-slate-600 hover:bg-transparent"
+                        className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:bg-transparent hover:text-slate-600"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
                         {showConfirmPassword ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
@@ -156,7 +156,7 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
               )}
             />
 
-            <DialogFooter className="pt-4 gap-2">
+            <DialogFooter className="gap-2 pt-4">
               <Button
                 type="button"
                 variant="outline"

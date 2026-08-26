@@ -626,7 +626,7 @@ export function CreateFormAutoemit({ setCreated }: Readonly<{ setCreated: () => 
         </div>
         <footer className="mt-6 w-full ">
           <div className="flex w-full justify-between">
-            <p className="text-secondary italic opacity-80">* Campos obrigatórios</p>
+            <p className="italic text-secondary opacity-80">* Campos obrigatórios</p>
             <TermsOfUse checkedTerms={checkedTerms} setCheckedTerms={setCheckedTerms} />
           </div>
           <Button

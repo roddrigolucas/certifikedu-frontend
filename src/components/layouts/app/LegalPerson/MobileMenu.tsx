@@ -42,7 +42,7 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="bg-ecstasy-50 h-screen w-full flex-col justify-between gap-8 overflow-y-auto border-0 p-4 py-6"
+        className="h-screen w-full flex-col justify-between gap-8 overflow-y-auto border-0 bg-ecstasy-50 p-4 py-6"
       >
         <SheetHeader className="inline-flex w-full flex-row items-center justify-between gap-8 pb-12">
           <Logo path={'images/logo_text_color.svg'} className="mt-2 h-8" />

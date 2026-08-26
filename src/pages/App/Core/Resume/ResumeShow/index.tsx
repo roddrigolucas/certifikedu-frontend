@@ -99,7 +99,7 @@ export default function ResumeShowPage() {
       {resume && (
         <div className="flex flex-col gap-6 px-4 py-6">
           {/* Actions Section */}
-          <section className="flex justify-end gap-4 flex-wrap">
+          <section className="flex flex-wrap justify-end gap-4">
             <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
             <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
               {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}
