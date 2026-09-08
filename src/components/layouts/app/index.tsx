@@ -170,10 +170,10 @@ export const ApplicationLayout = ({
       >
         <PuffLoader size="2rem" color="#FC790D" />
       </motion.div>
-      <section className="grid min-h-screen w-full grid-cols-12">
+      <section className="flex min-h-screen w-full bg-blue-zodiac-950">
         <Aside />
         <div
-          className={cn('col-span-12 size-full bg-blue-zodiac-950 md:p-2 md:pt-3', {
+          className={cn('min-h-screen w-full flex-1 bg-blue-zodiac-950 p-2 pt-3 md:pl-[332px] md:pr-2 md:py-3', {
             'bg-blue-zodiac-950': !isLegalPerson,
             'bg-ecstasy-50': isPJLayout,
             'bg-slate-950': isAdminSelected,
@@ -182,7 +182,7 @@ export const ApplicationLayout = ({
         >
           <motion.div
             className={cn(
-              'w-[calc(100vw - 24rem)] flex min-h-full flex-col gap-8 overflow-hidden bg-white px-6 pb-12 pt-8 md:ml-[324px] md:rounded-2xl md:px-12 md:pt-16',
+              'flex min-h-full w-full flex-col gap-8 overflow-hidden bg-white px-6 pb-12 pt-8 md:rounded-2xl md:px-10 md:pt-12',
             )}
           >
             <AlertEnv />
