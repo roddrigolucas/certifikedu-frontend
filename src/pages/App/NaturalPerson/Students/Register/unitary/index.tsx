@@ -155,8 +155,8 @@ function RegisterForm({ setCreated }: Readonly<{ setCreated: () => void }>) {
 
         return <span data-testId="toast-success">Aluno cadastrado com sucesso</span>;
       },
-      error: () => {
-        return 'Falha ao cadastrar aluno...';
+      error: (err: any) => {
+        return err?.message || 'Falha ao cadastrar aluno...';
       },
     });
   };
@@ -179,8 +179,8 @@ function RegisterForm({ setCreated }: Readonly<{ setCreated: () => void }>) {
 
         return 'Aluno associado com sucesso';
       },
-      error: () => {
-        return 'Falha ao associar aluno...';
+      error: (err: any) => {
+        return err?.message || 'Falha ao associar aluno...';
       },
     });
   };
