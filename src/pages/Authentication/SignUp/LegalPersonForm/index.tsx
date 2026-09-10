@@ -120,7 +120,18 @@ export default function LegalPersonForm() {
           return `Um código de verificação foi enviado para seu email ${values.email}`;
         },
         error: (error: any) => {
-          return `${error?.response?.data?.response?.message ?? error}`;
+          const rawMsg =
+            error?.response?.data?.message ??
+            error?.response?.data?.response?.message ??
+            error?.message;
+
+          if (Array.isArray(rawMsg)) {
+            return rawMsg.join(', ');
+          }
+          if (typeof rawMsg === 'string') {
+            return rawMsg;
+          }
+          return 'Erro ao cadastrar usuário';
         },
       });
     }
@@ -167,7 +178,13 @@ export default function LegalPersonForm() {
       </header>
       <Stepper steps={steps} currentStep={currentStep} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit(onSubmit)(e);
+          }}
+          className="w-full"
+        >
           <div className="md:min-h-[248px]">
             {currentStep === 0 && <CompanyForm form={form} />}
             {currentStep === 1 && <PersonalForm form={form} />}
