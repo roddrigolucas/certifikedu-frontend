@@ -121,14 +121,14 @@ export default function LegalPersonForm() {
         },
         error: (error: any) => {
           const rawMsg =
+            error?.message ??
             error?.response?.data?.message ??
-            error?.response?.data?.response?.message ??
-            error?.message;
+            error?.response?.data?.response?.message;
 
           if (Array.isArray(rawMsg)) {
             return rawMsg.join(', ');
           }
-          if (typeof rawMsg === 'string') {
+          if (typeof rawMsg === 'string' && rawMsg.trim()) {
             return rawMsg;
           }
           return 'Erro ao cadastrar usuário';
