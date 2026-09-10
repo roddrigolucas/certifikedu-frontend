@@ -25,7 +25,7 @@ interface Props {
 export function CheckboxReactHookFormMultipleSchools({ schools, form }: Props) {
   return (
     <Form {...form}>
-      <form className="space-y-8">
+      <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
         <FormField
           control={form.control}
           name="items"

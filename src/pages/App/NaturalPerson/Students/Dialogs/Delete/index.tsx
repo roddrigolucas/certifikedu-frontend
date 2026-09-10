@@ -85,9 +85,13 @@ export function DeleteStudentDialog({ student, children }: Readonly<Props>) {
             </Button>
           </DialogClose>
           <Button
+            type="button"
             data-testId="submit-button"
             disabled={formItems.length < 1}
-            onClick={() => onDelete(formItems)}
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete(formItems);
+            }}
             variant="destructive"
             className="w-full md:w-fit"
           >
