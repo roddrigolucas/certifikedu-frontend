@@ -20,6 +20,7 @@ const parseApiError = (error: any): string => {
   if (typeof rawMsg === 'string' && rawMsg.trim()) {
     return rawMsg;
   }
+
   return 'Erro ao realizar cadastro. Por favor, tente novamente.';
 };
 
