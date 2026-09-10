@@ -123,6 +123,7 @@ export const SignUpForm = ({ name = '', email = '', document = '' }: Props) => {
           if (typeof rawMsg === 'string' && rawMsg.trim()) {
             return rawMsg;
           }
+
           return 'Erro ao cadastrar usuário';
         },
       });

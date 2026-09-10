@@ -131,6 +131,7 @@ export default function LegalPersonForm() {
           if (typeof rawMsg === 'string' && rawMsg.trim()) {
             return rawMsg;
           }
+
           return 'Erro ao cadastrar usuário';
         },
       });
