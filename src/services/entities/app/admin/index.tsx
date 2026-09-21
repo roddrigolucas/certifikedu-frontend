@@ -198,6 +198,26 @@ const DeleteAbility = async (id: string) => {
   }
 };
 
+const ResetUserPassword = async (id: string) => {
+  try {
+    const response = await authApi.patch(AdminEnpoints.ResetUserPassword(id));
+
+    return response.data;
+  } catch (error) {
+    throw new Error('Error resetting user password');
+  }
+};
+
+const UpdateUserEmail = async (id: string, data: { email: string }) => {
+  try {
+    const response = await authApi.patch(AdminEnpoints.UpdateUserEmail(id), data);
+
+    return response.data;
+  } catch (error) {
+    throw new Error('Error updating user email');
+  }
+};
+
 export const AdminService = {
   GetAllUserAdmin,
   GetDocPicById,
@@ -217,4 +237,6 @@ export const AdminService = {
   UpdateAbility,
   DeleteAbility,
   DeleteUser,
+  ResetUserPassword,
+  UpdateUserEmail,
 };

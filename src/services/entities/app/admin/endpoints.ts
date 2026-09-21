@@ -18,4 +18,6 @@ export const AdminEnpoints = {
   CreateAbility: `${BASE_ENDPOINT}/abilities`,
   GetEnabledAbilityThemes: '/abilities/themes',
   GetEnabledAbilities: '/abilities/enabled',
+  ResetUserPassword: (id: string) => `${BASE_ENDPOINT}/users/${id}/reset-password`,
+  UpdateUserEmail: (id: string) => `${BASE_ENDPOINT}/users/${id}/email`,
 };

@@ -70,3 +70,7 @@ export interface IAdminAbility {
   ability: string;
   source: string;
 }
+
+export interface IUpdateUserEmail {
+  email: string;
+}

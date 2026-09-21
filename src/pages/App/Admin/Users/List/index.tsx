@@ -12,6 +12,7 @@ import {
   Trash2Icon,
   UserIcon,
   UsersIcon,
+  Key,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -34,6 +35,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/shared/ui/dropdown-menu';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shared/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from '@/components/shared/ui/dialog';
+import { Input } from '@/components/shared/ui/input';
 
 import useProfile from '@/hooks/core/useProfile';
 import useRequestProcessor from '@/hooks/core/useRequest';
@@ -59,6 +70,8 @@ export default function AdminUsersPage() {
 
   const [searchParameters] = useSearchParams();
   const [imageBuffer, setImageBuffer] = useState<string | undefined>(undefined);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
 
   const userId = searchParameters.get('userId')!;
 
@@ -154,6 +167,70 @@ export default function AdminUsersPage() {
     );
   };
 
+  const { mutate: resetUserPassword, isLoading: isResettingPassword } = useMutation<unknown, Error, string>(
+    (id) => AdminService.ResetUserPassword(id),
+  );
+
+  const handleResetPassword = () => {
+    resetUserPassword(userId, {
+      onSuccess: () => {
+        toast.success('Senha resetada com sucesso.');
+      },
+      onError: (error: any) => {
+        toast.error(`Erro ao resetar senha: ${error}`);
+      },
+    });
+  };
+
+  const { mutate: updateUserEmail, isLoading: isUpdatingEmail } = useMutation<unknown, Error, { id: string; email: string }>(
+    ({ id, email }) => AdminService.UpdateUserEmail(id, { email }),
+  );
+
+  const handleUpdateEmail = () => {
+    if (!newEmail) return toast.error('Por favor, insira um e-mail válido.');
+    updateUserEmail({ id: userId, email: newEmail }, {
+      onSuccess: () => {
+        toast.success('E-mail alterado com sucesso.');
+        setIsEmailModalOpen(false);
+        setNewEmail('');
+        queryClient.invalidateQueries(['admin', 'users', userStatus]);
+      },
+      onError: (error: any) => {
+        toast.error(`Erro ao atualizar e-mail: ${error}`);
+      },
+    });
+  };
+
+  const pfUsers = getAllUsersByStatus?.filter((user) => user.type === 'PF') ?? [];
+  const pjUsers = getAllUsersByStatus?.filter((user) => user.type === 'PJ') ?? [];
+
+  const statusDropdownMenu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Button variant="outline" size="sm">
+          <SearchCheckIcon className="mr-1 size-4" />
+          Selecionar Status
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Status</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))}>
+          <Badge variant="success">Ativo</Badge>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))}>
+          <Badge variant="destructive">Inativo</Badge>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}>
+          <Badge variant="secondary">Em Revisão</Badge>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}>
+          <Badge variant="default">Admin</Badge>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <ApplicationLayout icon={UsersIcon} title="Usuários">
       <BackButton
@@ -165,55 +242,40 @@ export default function AdminUsersPage() {
       {!userId && (
         <div className="flex flex-col gap-4">
           {userStatus && (
-            <DataTable
-              filterColumn="email"
-              columns={columns}
-              data={getAllUsersByStatus ?? []}
-              isLoading={isLoading}
-              isError={isError}
-              headerOptions={{
-                filter: true,
-                toolbar: true,
-                children: (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Button variant="outline" size="sm">
-                        <SearchCheckIcon className="mr-1 size-4" />
-                        Selecionar Status
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuLabel>Status</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() =>
-                          navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))
-                        }
-                      >
-                        <Badge variant="success">Ativo</Badge>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))
-                        }
-                      >
-                        <Badge variant="destructive">Inativo</Badge>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}
-                      >
-                        <Badge variant="secondary">Em Revisão</Badge>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}
-                      >
-                        <Badge variant="default">Admin</Badge>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ),
-              }}
-            />
+            <Tabs defaultValue="pf" className="w-full">
+              <TabsList className="mb-4 grid w-full max-w-[400px] grid-cols-2">
+                <TabsTrigger value="pf">Pessoa Física</TabsTrigger>
+                <TabsTrigger value="pj">Pessoa Jurídica</TabsTrigger>
+              </TabsList>
+              <TabsContent value="pf">
+                <DataTable
+                  filterColumn="email"
+                  columns={columns}
+                  data={pfUsers}
+                  isLoading={isLoading}
+                  isError={isError}
+                  headerOptions={{
+                    filter: true,
+                    toolbar: true,
+                    children: statusDropdownMenu,
+                  }}
+                />
+              </TabsContent>
+              <TabsContent value="pj">
+                <DataTable
+                  filterColumn="email"
+                  columns={columns}
+                  data={pjUsers}
+                  isLoading={isLoading}
+                  isError={isError}
+                  headerOptions={{
+                    filter: true,
+                    toolbar: true,
+                    children: statusDropdownMenu,
+                  }}
+                />
+              </TabsContent>
+            </Tabs>
           )}
         </div>
       )}
@@ -293,16 +355,55 @@ export default function AdminUsersPage() {
             </DropdownMenu>
 
             {specificUser?.type == 'PJ' && (
-              <Button
-                isLoading={isLoadingToggleApi}
-                onClick={() => toggleUserApiHandler(userId)}
-                type="submit"
-                variant="success"
-                className="w-full md:w-fit"
-              >
-                <Plug className="mr-2 size-5" />
-                {isStatusApiEnable ? 'Desativar API de integração' : 'Ativar API de integração'}
-              </Button>
+              <>
+                <Button
+                  isLoading={isResettingPassword}
+                  onClick={handleResetPassword}
+                  type="button"
+                  variant="outline"
+                  className="w-full md:w-fit"
+                >
+                  <Key className="mr-2 size-5" />
+                  Resetar Senha
+                </Button>
+
+                <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button type="button" variant="outline" className="w-full md:w-fit">
+                      <MailIcon className="mr-2 size-5" />
+                      Alterar E-mail
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Alterar E-mail de Cadastro</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                      <Input
+                        placeholder="Novo e-mail"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        type="email"
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsEmailModalOpen(false)}>Cancelar</Button>
+                      <Button isLoading={isUpdatingEmail} onClick={handleUpdateEmail}>Confirmar</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                <Button
+                  isLoading={isLoadingToggleApi}
+                  onClick={() => toggleUserApiHandler(userId)}
+                  type="submit"
+                  variant="success"
+                  className="w-full md:w-fit"
+                >
+                  <Plug className="mr-2 size-5" />
+                  {isStatusApiEnable ? 'Desativar API de integração' : 'Ativar API de integração'}
+                </Button>
+              </>
             )}
           </div>
           <div className="py-16">
