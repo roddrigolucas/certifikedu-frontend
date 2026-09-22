@@ -10,7 +10,6 @@ import { Button } from '@/components/shared/ui/button';
 import { Input } from '@/components/shared/ui/input';
 
 import { TableFacetedFilter } from './TableFacetedFilter';
-import { TableViewOptions } from './TableViewOptions';
 
 interface TableToolbarProps<TData> {
   table: Table<TData>;
