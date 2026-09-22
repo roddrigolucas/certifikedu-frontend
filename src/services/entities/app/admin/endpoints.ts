@@ -20,4 +20,5 @@ export const AdminEnpoints = {
   GetEnabledAbilities: '/abilities/enabled',
   ResetUserPassword: (id: string) => `${BASE_ENDPOINT}/users/${id}/reset-password`,
   UpdateUserEmail: (id: string) => `${BASE_ENDPOINT}/users/${id}/email`,
+  UpdateUserCadastral: (id: string) => `${BASE_ENDPOINT}/users/${id}`,
 };

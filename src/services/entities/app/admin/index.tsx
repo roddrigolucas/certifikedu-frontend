@@ -218,6 +218,16 @@ const UpdateUserEmail = async (id: string, data: { email: string }) => {
   }
 };
 
+const UpdateUserCadastral = async (id: string, data: { name?: string; phone?: string; document?: string }) => {
+  try {
+    const response = await authApi.patch(AdminEnpoints.UpdateUserCadastral(id), data);
+
+    return response.data;
+  } catch (error) {
+    throw new Error('Error updating user cadastral data');
+  }
+};
+
 export const AdminService = {
   GetAllUserAdmin,
   GetDocPicById,
@@ -239,4 +249,5 @@ export const AdminService = {
   DeleteUser,
   ResetUserPassword,
   UpdateUserEmail,
+  UpdateUserCadastral,
 };

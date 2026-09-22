@@ -72,6 +72,8 @@ export default function AdminUsersPage() {
   const [imageBuffer, setImageBuffer] = useState<string | undefined>(undefined);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [newEmail, setNewEmail] = useState('');
+  const [isCadastralModalOpen, setIsCadastralModalOpen] = useState(false);
+  const [cadastralData, setCadastralData] = useState({ name: '', phone: '', document: '' });
 
   const userId = searchParameters.get('userId')!;
 
@@ -133,6 +135,13 @@ export default function AdminUsersPage() {
   const specificUser: IAdmin | undefined = getAllUsersByStatus?.find(
     (user) => user.userId === userId,
   );
+
+  // Popula dados cadastrais quando o specificUser mudar
+  React.useEffect(() => {
+    if (specificUser) {
+      setCadastralData({ name: specificUser.name || '', phone: specificUser.phone || '', document: specificUser.document || '' });
+    }
+  }, [specificUser]);
 
   const isStatusApiEnable = specificUser?.apiEnabled ?? false;
 
@@ -201,8 +210,25 @@ export default function AdminUsersPage() {
     });
   };
 
-  const pfUsers = getAllUsersByStatus?.filter((user) => user.type === 'PF') ?? [];
-  const pjUsers = getAllUsersByStatus?.filter((user) => user.type === 'PJ') ?? [];
+  const { mutate: updateUserCadastral, isLoading: isUpdatingCadastral } = useMutation<unknown, Error, { id: string; data: { name?: string; phone?: string; document?: string } }>(
+    ({ id, data }) => AdminService.UpdateUserCadastral(id, data),
+  );
+
+  const handleUpdateCadastral = () => {
+    updateUserCadastral({ id: userId, data: cadastralData }, {
+      onSuccess: () => {
+        toast.success('Dados cadastrais atualizados com sucesso.');
+        setIsCadastralModalOpen(false);
+        queryClient.invalidateQueries(['admin', 'users', userStatus]);
+      },
+      onError: (error: any) => {
+        toast.error(`Erro ao atualizar dados: ${error}`);
+      },
+    });
+  };
+
+  const pfUsers = getAllUsersByStatus?.filter((user) => user.type === 'PF').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
+  const pjUsers = getAllUsersByStatus?.filter((user) => user.type === 'PJ').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
 
   const statusDropdownMenu = (
     <DropdownMenu>
@@ -354,44 +380,80 @@ export default function AdminUsersPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <Button
+              isLoading={isResettingPassword}
+              onClick={handleResetPassword}
+              type="button"
+              variant="outline"
+              className="w-full md:w-fit"
+            >
+              <Key className="mr-2 size-5" />
+              Resetar Senha
+            </Button>
+
+            <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
+              <DialogTrigger asChild>
+                <Button type="button" variant="outline" className="w-full md:w-fit">
+                  <MailIcon className="mr-2 size-5" />
+                  Alterar E-mail
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Alterar E-mail de Cadastro</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                  <Input
+                    placeholder="Novo e-mail"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    type="email"
+                  />
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsEmailModalOpen(false)}>Cancelar</Button>
+                  <Button isLoading={isUpdatingEmail} onClick={handleUpdateEmail}>Confirmar</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog open={isCadastralModalOpen} onOpenChange={setIsCadastralModalOpen}>
+              <DialogTrigger asChild>
+                <Button type="button" variant="outline" className="w-full md:w-fit">
+                  <UserIcon className="mr-2 size-5" />
+                  Alterar Dados
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Alterar Dados Cadastrais</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                  <Input
+                    placeholder="Nome"
+                    value={cadastralData.name}
+                    onChange={(e) => setCadastralData({ ...cadastralData, name: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Telefone"
+                    value={cadastralData.phone}
+                    onChange={(e) => setCadastralData({ ...cadastralData, phone: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Documento (CPF/CNPJ)"
+                    value={cadastralData.document}
+                    onChange={(e) => setCadastralData({ ...cadastralData, document: e.target.value })}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsCadastralModalOpen(false)}>Cancelar</Button>
+                  <Button isLoading={isUpdatingCadastral} onClick={handleUpdateCadastral}>Confirmar</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
             {specificUser?.type == 'PJ' && (
               <>
-                <Button
-                  isLoading={isResettingPassword}
-                  onClick={handleResetPassword}
-                  type="button"
-                  variant="outline"
-                  className="w-full md:w-fit"
-                >
-                  <Key className="mr-2 size-5" />
-                  Resetar Senha
-                </Button>
-
-                <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
-                  <DialogTrigger asChild>
-                    <Button type="button" variant="outline" className="w-full md:w-fit">
-                      <MailIcon className="mr-2 size-5" />
-                      Alterar E-mail
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Alterar E-mail de Cadastro</DialogTitle>
-                    </DialogHeader>
-                    <div className="py-4">
-                      <Input
-                        placeholder="Novo e-mail"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        type="email"
-                      />
-                    </div>
-                    <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsEmailModalOpen(false)}>Cancelar</Button>
-                      <Button isLoading={isUpdatingEmail} onClick={handleUpdateEmail}>Confirmar</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
 
                 <Button
                   isLoading={isLoadingToggleApi}

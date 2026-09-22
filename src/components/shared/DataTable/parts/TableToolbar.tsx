@@ -138,7 +138,6 @@ export function TableToolbar<TData>({
       </div>
       <div className="inline-flex gap-2">
         {children}
-        <TableViewOptions table={table} />
       </div>
     </div>
   );
