@@ -74,3 +74,14 @@ export interface IAdminAbility {
 export interface IUpdateUserEmail {
   email: string;
 }
+
+export interface ICreateUserAdmin {
+  email: string;
+  documentNumber: string;
+  name: string;
+  phone?: string;
+  password?: string;
+  type?: 'PF' | 'PJ';
+  status?: string;
+}
+

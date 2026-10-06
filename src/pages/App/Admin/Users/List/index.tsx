@@ -45,6 +45,13 @@ import {
   DialogTrigger,
 } from '@/components/shared/ui/dialog';
 import { Input } from '@/components/shared/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/shared/ui/select';
 
 import useProfile from '@/hooks/core/useProfile';
 import useRequestProcessor from '@/hooks/core/useRequest';
@@ -53,6 +60,7 @@ import { AdminService } from '@/services/entities/app/admin';
 import { EAdminStatus } from '@/services/entities/app/admin/enum';
 import {
   IAdmin,
+  ICreateUserAdmin,
   IShowDocumentImageResponse,
   IUpdateUserInfo,
 } from '@/services/entities/app/admin/model';
@@ -74,10 +82,53 @@ export default function AdminUsersPage() {
   const [newEmail, setNewEmail] = useState('');
   const [isCadastralModalOpen, setIsCadastralModalOpen] = useState(false);
   const [cadastralData, setCadastralData] = useState({ name: '', phone: '', document: '' });
+  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
 
   const userId = searchParameters.get('userId')!;
-
   const userStatus = searchParameters.get('status') ?? EAdminStatus.ENABLED;
+
+  const [createUserData, setCreateUserData] = useState<ICreateUserAdmin>({
+    name: '',
+    email: '',
+    documentNumber: '',
+    phone: '',
+    password: '',
+    type: 'PF',
+    status: userStatus,
+  });
+
+  const { mutate: createUser, isLoading: isCreatingUser } = useMutation<
+    unknown,
+    Error,
+    ICreateUserAdmin
+  >((data) => AdminService.CreateUser(data));
+
+  const handleCreateUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createUserData.name.trim()) return toast.error('Informe o nome do usuário.');
+    if (!createUserData.email.trim()) return toast.error('Informe o e-mail do usuário.');
+    if (!createUserData.documentNumber.trim()) return toast.error('Informe o documento (CPF ou CNPJ).');
+
+    createUser(createUserData, {
+      onSuccess: () => {
+        toast.success('Usuário criado com sucesso no banco de dados!');
+        setIsCreateUserModalOpen(false);
+        setCreateUserData({
+          name: '',
+          email: '',
+          documentNumber: '',
+          phone: '',
+          password: '',
+          type: 'PF',
+          status: userStatus,
+        });
+        queryClient.invalidateQueries(['admin', 'users', userStatus]);
+      },
+      onError: (error: any) => {
+        toast.error(`Erro ao criar usuário: ${error.message || error}`);
+      },
+    });
+  };
 
   const {
     data: getAllUsersByStatus,
@@ -230,31 +281,153 @@ export default function AdminUsersPage() {
   const pfUsers = getAllUsersByStatus?.filter((user) => user.type === 'PF').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
   const pjUsers = getAllUsersByStatus?.filter((user) => user.type === 'PJ').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
 
-  const statusDropdownMenu = (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="outline" size="sm">
-          <SearchCheckIcon className="mr-1 size-4" />
-          Selecionar Status
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Status</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))}>
-          <Badge variant="success">Ativo</Badge>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))}>
-          <Badge variant="destructive">Inativo</Badge>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}>
-          <Badge variant="secondary">Em Revisão</Badge>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}>
-          <Badge variant="default">Admin</Badge>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button variant="outline" size="sm">
+            <SearchCheckIcon className="mr-1 size-4" />
+            Selecionar Status
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Status</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))}>
+            <Badge variant="success">Ativo</Badge>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))}>
+            <Badge variant="destructive">Inativo</Badge>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}>
+            <Badge variant="secondary">Em Revisão</Badge>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}>
+            <Badge variant="default">Admin</Badge>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={isCreateUserModalOpen} onOpenChange={setIsCreateUserModalOpen}>
+        <DialogTrigger asChild>
+          <Button variant="success" size="sm">
+            <Plus className="mr-1 size-4" />
+            Incluir Usuário
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Incluir Novo Usuário</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateUser} className="space-y-4 py-2">
+            <div>
+              <label className="text-xs font-semibold text-slate-700">Tipo de Usuário</label>
+              <div className="mt-1 flex gap-4">
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="PF"
+                    checked={createUserData.type === 'PF'}
+                    onChange={() => setCreateUserData({ ...createUserData, type: 'PF' })}
+                  />
+                  Pessoa Física (PF)
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="PJ"
+                    checked={createUserData.type === 'PJ'}
+                    onChange={() => setCreateUserData({ ...createUserData, type: 'PJ' })}
+                  />
+                  Pessoa Jurídica (PJ)
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">Nome / Razão Social *</label>
+              <Input
+                placeholder="Ex: João da Silva ou Empresa XYZ"
+                value={createUserData.name}
+                onChange={(e) => setCreateUserData({ ...createUserData, name: e.target.value })}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">E-mail *</label>
+              <Input
+                type="email"
+                placeholder="email@exemplo.com"
+                value={createUserData.email}
+                onChange={(e) => setCreateUserData({ ...createUserData, email: e.target.value })}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">
+                {createUserData.type === 'PJ' ? 'CNPJ *' : 'CPF *'}
+              </label>
+              <Input
+                placeholder={createUserData.type === 'PJ' ? '00.000.000/0000-00' : '000.000.000-00'}
+                value={createUserData.documentNumber}
+                onChange={(e) => setCreateUserData({ ...createUserData, documentNumber: e.target.value })}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">Telefone (Opcional)</label>
+              <Input
+                placeholder="(00) 00000-0000"
+                value={createUserData.phone || ''}
+                onChange={(e) => setCreateUserData({ ...createUserData, phone: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">Senha (Opcional - gerada auto se vazia)</label>
+              <Input
+                type="password"
+                placeholder="******"
+                value={createUserData.password || ''}
+                onChange={(e) => setCreateUserData({ ...createUserData, password: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700">Status Inicial</label>
+              <Select
+                value={createUserData.status || EAdminStatus.ENABLED}
+                onValueChange={(val) => setCreateUserData({ ...createUserData, status: val })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione o status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={EAdminStatus.ENABLED}>Ativo (ENABLED)</SelectItem>
+                  <SelectItem value={EAdminStatus.ADMIN}>Admin (ADMIN)</SelectItem>
+                  <SelectItem value={EAdminStatus.REVIEW}>Em Revisão (REVIEW)</SelectItem>
+                  <SelectItem value={EAdminStatus.DISABLED}>Inativo (DISABLED)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" onClick={() => setIsCreateUserModalOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" isLoading={isCreatingUser} variant="success">
+                Salvar no Banco
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 
   return (
@@ -283,7 +456,7 @@ export default function AdminUsersPage() {
                   headerOptions={{
                     filter: true,
                     toolbar: true,
-                    children: statusDropdownMenu,
+                    children: headerActions,
                   }}
                 />
               </TabsContent>
@@ -297,7 +470,7 @@ export default function AdminUsersPage() {
                   headerOptions={{
                     filter: true,
                     toolbar: true,
-                    children: statusDropdownMenu,
+                    children: headerActions,
                   }}
                 />
               </TabsContent>

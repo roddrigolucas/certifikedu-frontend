@@ -8,6 +8,7 @@ import {
   IAdminUsers,
   IGetAllUserAdmin,
   IRegisterEmailTemplate,
+  ICreateUserAdmin,
   IShowDocumentImageResponse,
   IUpdateCertificateInfo,
   IUpdateEmailTemplate,
@@ -228,6 +229,17 @@ const UpdateUserCadastral = async (id: string, data: { name?: string; phone?: st
   }
 };
 
+const CreateUser = async (data: ICreateUserAdmin) => {
+  try {
+    const response = await authApi.post(AdminEnpoints.CreateUser, data);
+
+    return response.data;
+  } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || 'Erro ao criar usuário';
+    throw new Error(Array.isArray(message) ? message.join(', ') : message);
+  }
+};
+
 export const AdminService = {
   GetAllUserAdmin,
   GetDocPicById,
@@ -250,4 +262,5 @@ export const AdminService = {
   ResetUserPassword,
   UpdateUserEmail,
   UpdateUserCadastral,
+  CreateUser,
 };

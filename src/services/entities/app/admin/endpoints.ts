@@ -21,4 +21,5 @@ export const AdminEnpoints = {
   ResetUserPassword: (id: string) => `${BASE_ENDPOINT}/users/${id}/reset-password`,
   UpdateUserEmail: (id: string) => `${BASE_ENDPOINT}/users/${id}/email`,
   UpdateUserCadastral: (id: string) => `${BASE_ENDPOINT}/users/${id}`,
+  CreateUser: `${BASE_ENDPOINT}/users`,
 };
