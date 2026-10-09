@@ -62,6 +62,24 @@ const UserActionsCell = ({ row }: { row: any }) => {
     onError: () => toast.error('Erro ao deletar usuário.'),
   });
 
+  const { mutate: enableLTI } = useMutation({
+    mutationFn: () => AdminService.EnableMoodleLTI(row.original.userId),
+    onSuccess: () => {
+      toast.success('Integração Moodle ativada com sucesso!');
+      queryClient.invalidateQueries(['admin', 'users']);
+    },
+    onError: () => toast.error('Erro ao ativar integração Moodle.'),
+  });
+
+  const { mutate: disableLTI } = useMutation({
+    mutationFn: () => AdminService.DisableMoodleLTI(row.original.userId),
+    onSuccess: () => {
+      toast.success('Integração Moodle desativada com sucesso!');
+      queryClient.invalidateQueries(['admin', 'users']);
+    },
+    onError: () => toast.error('Erro ao desativar integração Moodle.'),
+  });
+
   return (
     <TooltipProvider>
       <div className="inline-flex gap-2">
@@ -109,6 +127,20 @@ const UserActionsCell = ({ row }: { row: any }) => {
               <CopyIcon className="size-4" />
               Copiar Email
             </DropdownMenuItem>
+            
+            {row.original.type === 'PJ' && (
+              row.original.hasMoodleIntegration ? (
+                <DropdownMenuItem className="inline-flex w-full gap-2 cursor-pointer" onClick={() => disableLTI()}>
+                  <GraduationCap className="size-4" />
+                  Desativar Integração Moodle
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem className="inline-flex w-full gap-2 cursor-pointer" onClick={() => enableLTI()}>
+                  <GraduationCap className="size-4" />
+                  Ativar Integração Moodle
+                </DropdownMenuItem>
+              )
+            )}
             <DropdownMenuItem className="inline-flex w-full gap-2 text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer" onClick={() => {
               if (window.confirm('Tem certeza que deseja deletar este usuário? Esta ação não pode ser desfeita.')) {
                 deleteUser();

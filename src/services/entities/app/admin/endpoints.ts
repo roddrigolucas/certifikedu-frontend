@@ -22,6 +22,6 @@ export const AdminEnpoints = {
   UpdateUserEmail: (id: string) => `${BASE_ENDPOINT}/users/${id}/email`,
   UpdateUserCadastral: (id: string) => `${BASE_ENDPOINT}/users/${id}`,
   CreateUser: `${BASE_ENDPOINT}/users`,
-  EnableMoodleLTI: (id: string) => `${BASE_ENDPOINT}/lti/moodle/enable/${id}`,
-  DisableMoodleLTI: (id: string) => `${BASE_ENDPOINT}/lti/moodle/disable/${id}`,
+  EnableMoodleLTI: (id: string) => `${BASE_ENDPOINT}/users/${id}/moodle-lti/enable`,
+  DisableMoodleLTI: (id: string) => `${BASE_ENDPOINT}/users/${id}/moodle-lti/disable`,
 };

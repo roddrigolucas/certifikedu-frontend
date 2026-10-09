@@ -93,7 +93,13 @@ function CurriculumEditForm({
 
   function onSubmit(values: CurriculumSchemaType) {
     if (editBasicInfo) {
-      const { semesters, activities, internships, ...basicInfo } = values;
+      const basicInfo = {
+        name: values.name,
+        description: values.description,
+        requiredHoursWorkload: values.requiredHoursWorkload,
+        electiveHoursWorkload: values.electiveHoursWorkload,
+        complementaryHoursWorkload: values.complementaryHoursWorkload,
+      };
       const response = CourseService.EditCurriculum(selectedPJ?.pjId ?? '', id ?? '', basicInfo as any);
 
       toast.promise(response, {
