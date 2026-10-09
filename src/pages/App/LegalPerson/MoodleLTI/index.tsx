@@ -12,12 +12,14 @@ import { authApi } from '@/services/api/api';
 
 const fetchConfig = async () => {
   const { data } = await authApi.get('/moodle-lti/config');
-  return data;
+  
+return data;
 };
 
 const updateConfig = async (configData: any) => {
   const { data } = await authApi.post('/moodle-lti/config', configData);
-  return data;
+  
+return data;
 };
 
 export const MoodleLtiConfigPage = () => {
@@ -152,7 +154,7 @@ export const MoodleLtiConfigPage = () => {
             </Button>
           </form>
 
-          <div className="flex flex-col gap-4 rounded-xl border p-6 shadow-sm bg-muted/20">
+          <div className="flex flex-col gap-4 rounded-xl border bg-muted/20 p-6 shadow-sm">
             <h2 className="text-lg font-semibold">Configurações para inserir no Moodle</h2>
             <p className="text-sm text-muted-foreground">
               Utilize as URLs abaixo para cadastrar a CertifikEDU como LTI Tool Provider no seu ambiente Moodle.

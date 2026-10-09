@@ -251,7 +251,8 @@ const CreateUser = async (data: ICreateUserAdmin) => {
 const EnableMoodleLTI = async (id: string) => {
   try {
     const response = await authApi.patch(AdminEnpoints.EnableMoodleLTI(id));
-    return response.data;
+    
+return response.data;
   } catch (error) {
     throw new Error('Error enabling Moodle LTI');
   }
@@ -260,7 +261,8 @@ const EnableMoodleLTI = async (id: string) => {
 const DisableMoodleLTI = async (id: string) => {
   try {
     const response = await authApi.patch(AdminEnpoints.DisableMoodleLTI(id));
-    return response.data;
+    
+return response.data;
   } catch (error) {
     throw new Error('Error disabling Moodle LTI');
   }
