@@ -6,6 +6,7 @@ const unauthenticatedPaths = {
   resetEmail: '/authentication/reset-email',
   verifyEmail: '/authentication/verify-email',
   updatePassword: '/authentication/update-password',
+  moodleAuth: '/moodle/auth',
   docs: '/docs',
   certificates: {
     root: '/certificates',

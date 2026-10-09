@@ -195,6 +195,7 @@ export default function AdminUsersPage() {
   }, [specificUser]);
 
   const isStatusApiEnable = specificUser?.apiEnabled ?? false;
+  const isMoodleApiEnable = specificUser?.hasMoodleIntegration ?? false;
 
   // ANCHOR - Integration API toggle
   const { mutate: toggleUserApi, isLoading: isLoadingToggleApi } = useMutation<
@@ -220,6 +221,35 @@ export default function AdminUsersPage() {
         onError: () => {
           toast.error(
             `Erro ao ${!isStatusApiEnable ? 'habilitar' : 'desabilitar'} a API para o usuário. Por favor, tente novamente.`,
+            { duration: 3000 },
+          );
+        },
+      },
+    );
+  };
+
+  const { mutate: toggleUserMoodleApi, isLoading: isLoadingToggleMoodleApi } = useMutation<
+    unknown,
+    Error,
+    { id: string; enable: boolean }
+  >(({ id, enable }) =>
+    enable ? AdminService.EnableMoodleLTI(id) : AdminService.DisableMoodleLTI(id),
+  );
+
+  const toggleUserMoodleApiHandler = (id: string) => {
+    toggleUserMoodleApi(
+      { id, enable: !isMoodleApiEnable },
+      {
+        onSuccess: () => {
+          toast.success(
+            `Moodle LTI ${!isMoodleApiEnable ? 'habilitado' : 'desabilitado'} com sucesso.`,
+            { duration: 2000 },
+          );
+          queryClient.invalidateQueries(['admin', 'users', userStatus]);
+        },
+        onError: () => {
+          toast.error(
+            `Erro ao ${!isMoodleApiEnable ? 'habilitar' : 'desabilitar'} Moodle LTI. Por favor, tente novamente.`,
             { duration: 3000 },
           );
         },
@@ -638,7 +668,6 @@ export default function AdminUsersPage() {
 
             {specificUser?.type == 'PJ' && (
               <>
-
                 <Button
                   isLoading={isLoadingToggleApi}
                   onClick={() => toggleUserApiHandler(userId)}
@@ -648,6 +677,16 @@ export default function AdminUsersPage() {
                 >
                   <Plug className="mr-2 size-5" />
                   {isStatusApiEnable ? 'Desativar API de integração' : 'Ativar API de integração'}
+                </Button>
+                <Button
+                  isLoading={isLoadingToggleMoodleApi}
+                  onClick={() => toggleUserMoodleApiHandler(userId)}
+                  type="submit"
+                  variant="success"
+                  className="w-full md:w-fit"
+                >
+                  <Plug className="mr-2 size-5" />
+                  {isMoodleApiEnable ? 'Desativar Moodle LTI' : 'Ativar Moodle LTI'}
                 </Button>
               </>
             )}

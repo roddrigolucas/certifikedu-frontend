@@ -15,6 +15,7 @@ export interface IAdmin {
   pictureId: string;
   status: EAdminStatus;
   apiEnabled: boolean;
+  hasMoodleIntegration?: boolean;
 }
 
 export interface IGetAllUserAdmin {

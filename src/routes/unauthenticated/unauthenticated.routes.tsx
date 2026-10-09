@@ -13,6 +13,7 @@ import { ResetPasswordPage } from '@/pages/Authentication/ResetPassword';
 import { SignInPage } from '@/pages/Authentication/SignIn';
 import SignUpPage from '@/pages/Authentication/SignUp';
 import { UpdatePassword } from '@/pages/Authentication/UpdatePassword';
+import { MoodleAuthPage } from '@/pages/Authentication/MoodleAuth';
 
 import useProfile from '@/hooks/core/useProfile';
 
@@ -35,6 +36,7 @@ export const UnauthenticatedApplication = () => {
         <Route path={unauthenticated.resetEmail} element={<ResetEmailPage />} />
         <Route path={unauthenticated.verifyEmail} element={<VerifyNewEmailPage />} />
       </Route>
+      <Route path={unauthenticated.moodleAuth} element={<MoodleAuthPage />} />
       <Route path={unauthenticated.docs} element={<DocumentationCard />} />
       {/* Certificates */}
       <Route path={unauthenticated.certificates.root}>

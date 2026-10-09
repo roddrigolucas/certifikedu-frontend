@@ -248,6 +248,24 @@ const CreateUser = async (data: ICreateUserAdmin) => {
   }
 };
 
+const EnableMoodleLTI = async (id: string) => {
+  try {
+    const response = await authApi.patch(AdminEnpoints.EnableMoodleLTI(id));
+    return response.data;
+  } catch (error) {
+    throw new Error('Error enabling Moodle LTI');
+  }
+};
+
+const DisableMoodleLTI = async (id: string) => {
+  try {
+    const response = await authApi.patch(AdminEnpoints.DisableMoodleLTI(id));
+    return response.data;
+  } catch (error) {
+    throw new Error('Error disabling Moodle LTI');
+  }
+};
+
 export const AdminService = {
   GetAllUserAdmin,
   GetDocPicById,
@@ -271,4 +289,6 @@ export const AdminService = {
   UpdateUserEmail,
   UpdateUserCadastral,
   CreateUser,
+  EnableMoodleLTI,
+  DisableMoodleLTI,
 };
