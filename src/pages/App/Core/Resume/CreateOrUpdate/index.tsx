@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,12 +12,11 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   GlobeIcon,
+  Loader2,
   SchoolIcon,
   UploadIcon,
-  Loader2,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -131,7 +130,7 @@ function ResumeCreateForm({
       setIsUploading(true);
       toast.info('Lendo currículo com Inteligência Artificial, por favor aguarde...');
       const parsedData = await ResumeService.ParseResume(file);
-      
+
       form.reset({
         ...form.getValues(),
         ...parsedData,
@@ -219,9 +218,23 @@ function ResumeCreateForm({
   return (
     <>
       <div className="mb-4 flex justify-end">
-        <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
-        <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
-          {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="application/pdf"
+          onChange={handleFileUpload}
+        />
+        <Button
+          onClick={() => fileInputRef.current?.click()}
+          variant="outline"
+          disabled={isUploading}
+        >
+          {isUploading ? (
+            <Loader2 className="mr-2 size-5 animate-spin" />
+          ) : (
+            <UploadIcon className="mr-2 size-5" />
+          )}
           Upload Currículo (Preenchimento IA)
         </Button>
       </div>

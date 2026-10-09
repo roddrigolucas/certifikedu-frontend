@@ -1,4 +1,5 @@
 import {
+  AlertTriangleIcon,
   ArrowUpDownIcon,
   CalendarIcon,
   DownloadIcon,
@@ -6,15 +7,16 @@ import {
   FilterIcon,
   GraduationCapIcon,
   LayoutListIcon,
-  AlertTriangleIcon
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { ApplicationLayout } from '@/components/layouts/app';
 import { CardInformation } from '@/components/pages/Authentication/CardInformation';
 import { Button } from '@/components/shared/ui/button';
+
 import useProfile from '@/hooks/core/useProfile';
 import useRequestProcessor from '@/hooks/core/useRequest';
+
 import { ReportsService } from '@/services/entities/app/legalPerson/reports';
 
 export default function ReportsPage() {

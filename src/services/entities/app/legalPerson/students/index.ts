@@ -84,10 +84,7 @@ const VerifyStudent = async (pjId: string, document: string) => {
 
 const RegisterStudentBulk = async (pjId: string, data: IRegisterUserBulk) => {
   try {
-    const response = await authApi.post<any>(
-      StudentsEndpoints.RegisterStudentsBulk(pjId),
-      data,
-    );
+    const response = await authApi.post<any>(StudentsEndpoints.RegisterStudentsBulk(pjId), data);
 
     if (response.data?.users && Array.isArray(response.data.users)) {
       const invalidUser = response.data.users.find((u: any) => u.isValid === false);

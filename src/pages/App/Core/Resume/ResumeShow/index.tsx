@@ -1,3 +1,5 @@
+import { useRef, useState } from 'react';
+
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -7,12 +9,11 @@ import {
   FileTextIcon,
   GlobeIcon,
   GraduationCapIcon,
+  Loader2,
   MailIcon,
   PhoneIcon,
   UploadIcon,
-  Loader2,
 } from 'lucide-react';
-import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -100,9 +101,23 @@ export default function ResumeShowPage() {
         <div className="flex flex-col gap-6 px-4 py-6">
           {/* Actions Section */}
           <section className="flex flex-wrap justify-end gap-4">
-            <input type="file" ref={fileInputRef} className="hidden" accept="application/pdf" onChange={handleFileUpload} />
-            <Button onClick={() => fileInputRef.current?.click()} variant="outline" disabled={isUploading}>
-              {isUploading ? <Loader2 className="mr-2 size-5 animate-spin" /> : <UploadIcon className="mr-2 size-5" />}
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="application/pdf"
+              onChange={handleFileUpload}
+            />
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              variant="outline"
+              disabled={isUploading}
+            >
+              {isUploading ? (
+                <Loader2 className="mr-2 size-5 animate-spin" />
+              ) : (
+                <UploadIcon className="mr-2 size-5" />
+              )}
               Upload Currículo (Preenchimento IA)
             </Button>
             <Button onClick={handleEdit} variant="secondary">

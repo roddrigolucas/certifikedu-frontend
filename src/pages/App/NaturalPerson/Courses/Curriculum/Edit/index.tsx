@@ -100,7 +100,11 @@ function CurriculumEditForm({
         electiveHoursWorkload: values.electiveHoursWorkload,
         complementaryHoursWorkload: values.complementaryHoursWorkload,
       };
-      const response = CourseService.EditCurriculum(selectedPJ?.pjId ?? '', id ?? '', basicInfo as any);
+      const response = CourseService.EditCurriculum(
+        selectedPJ?.pjId ?? '',
+        id ?? '',
+        basicInfo as any,
+      );
 
       toast.promise(response, {
         loading: 'Em processamento...',

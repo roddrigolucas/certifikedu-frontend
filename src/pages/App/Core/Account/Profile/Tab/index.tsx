@@ -37,8 +37,8 @@ import {
   removeNonNumeric,
 } from '@/utils/validation/format';
 
-import { UpdateUserInfoDialog } from '../UpdateUserInfoDialog';
 import { ChangePasswordDialog } from '../ChangePasswordDialog';
+import { UpdateUserInfoDialog } from '../UpdateUserInfoDialog';
 
 type UpdatedInfo = {
   fieldName: string;
@@ -395,10 +395,7 @@ export default function ProfileTab({ isCPF, level, setCreated }: Readonly<Interf
             setIsOpen={setIsOpen}
             changedValues={changedValues}
           />
-          <ChangePasswordDialog
-            isOpen={isChangePasswordOpen}
-            setIsOpen={setIsChangePasswordOpen}
-          />
+          <ChangePasswordDialog isOpen={isChangePasswordOpen} setIsOpen={setIsChangePasswordOpen} />
         </div>
       </form>
     </Form>

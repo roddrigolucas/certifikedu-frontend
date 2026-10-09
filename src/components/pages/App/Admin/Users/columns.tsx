@@ -1,5 +1,6 @@
 'use client';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { cnpj as cnpjChecker, cpf as cpfChecker } from 'cpf-cnpj-validator';
 import {
@@ -8,10 +9,11 @@ import {
   EyeIcon,
   GraduationCap,
   MoreVerticalIcon,
-  UserIcon,
   Trash2Icon,
+  UserIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { TableColumnHeader } from '@/components/shared/DataTable/parts';
 import { Badge } from '@/components/shared/ui/badge';
@@ -29,14 +31,13 @@ import {
   TooltipTrigger,
 } from '@/components/shared/ui/tooltip';
 
+import useProfile from '@/hooks/core/useProfile';
+
+import { AdminService } from '@/services/entities/app/admin';
 import { EAdminStatus } from '@/services/entities/app/admin/enum';
 import { IAdmin } from '@/services/entities/app/admin/model';
 
 import { buildAdminPageUrl } from '@/utils/url';
-import useProfile from '@/hooks/core/useProfile';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AdminService } from '@/services/entities/app/admin';
-import { toast } from 'sonner';
 
 const UserActionsCell = ({ row }: { row: any }) => {
   const { profileInfo } = useProfile();
@@ -45,7 +46,8 @@ const UserActionsCell = ({ row }: { row: any }) => {
   const isAllowed = profileInfo?.email === 'r.lucas@fiemg.com.br';
 
   const { mutate: updateStatus } = useMutation({
-    mutationFn: (status: EAdminStatus) => AdminService.UpdateUserStatus({ userToUpdateId: row.original.userId, status }),
+    mutationFn: (status: EAdminStatus) =>
+      AdminService.UpdateUserStatus({ userToUpdateId: row.original.userId, status }),
     onSuccess: () => {
       toast.success('Status atualizado com sucesso!');
       queryClient.invalidateQueries(['admin', 'users']);
@@ -85,67 +87,107 @@ const UserActionsCell = ({ row }: { row: any }) => {
       <div className="inline-flex gap-2">
         <Tooltip>
           <TooltipTrigger>
-            <Link to={buildAdminPageUrl({ userId: row.original.userId, status: row.original.status })}>
-              <Button variant="ghost" className="flex size-8 p-0 text-slate-600 hover:bg-ecstasy-50 hover:text-ecstasy-600">
+            <Link
+              to={buildAdminPageUrl({ userId: row.original.userId, status: row.original.status })}
+            >
+              <Button
+                variant="ghost"
+                className="flex size-8 p-0 text-slate-600 hover:bg-ecstasy-50 hover:text-ecstasy-600"
+              >
                 <EyeIcon className="size-4" />
                 <span className="sr-only">Ver Usuário</span>
               </Button>
             </Link>
           </TooltipTrigger>
-          <TooltipContent><p>Ver Usuário</p></TooltipContent>
+          <TooltipContent>
+            <p>Ver Usuário</p>
+          </TooltipContent>
         </Tooltip>
 
         <DropdownMenu>
           <Tooltip disableHoverableContent>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
-                <Button disabled={!isAllowed} variant="ghost" className="flex size-8 p-0 text-slate-600 hover:bg-blue-50 hover:text-blue-600">
+                <Button
+                  disabled={!isAllowed}
+                  variant="ghost"
+                  className="flex size-8 p-0 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                >
                   <EditIcon className="size-4" />
                   <span className="sr-only">Editar Status</span>
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
-            <TooltipContent><p>Editar Status</p></TooltipContent>
+            <TooltipContent>
+              <p>Editar Status</p>
+            </TooltipContent>
           </Tooltip>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.ENABLED)}><Badge variant="success">Ativo</Badge></DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.DISABLED)}><Badge variant="destructive">Inativo</Badge></DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.REVIEW)}><Badge variant="secondary">Em Revisão</Badge></DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.ADMIN)}><Badge variant="default">Admin</Badge></DropdownMenuItem>
+            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.ENABLED)}>
+              <Badge variant="success">Ativo</Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.DISABLED)}>
+              <Badge variant="destructive">Inativo</Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.REVIEW)}>
+              <Badge variant="secondary">Em Revisão</Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => updateStatus(EAdminStatus.ADMIN)}>
+              <Badge variant="default">Admin</Badge>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button disabled={!isAllowed} variant="ghost" className="flex size-8 p-0 data-[state=open]:bg-slate-100">
+            <Button
+              disabled={!isAllowed}
+              variant="ghost"
+              className="flex size-8 p-0 data-[state=open]:bg-slate-100"
+            >
               <MoreVerticalIcon className="size-4" />
               <span className="sr-only">Abrir Menu</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="inline-flex w-full gap-2 cursor-pointer" onClick={() => navigator.clipboard.writeText(row.original.email)}>
+            <DropdownMenuItem
+              className="inline-flex w-full cursor-pointer gap-2"
+              onClick={() => navigator.clipboard.writeText(row.original.email)}
+            >
               <CopyIcon className="size-4" />
               Copiar Email
             </DropdownMenuItem>
-            
-            {row.original.type === 'PJ' && (
-              row.original.hasMoodleIntegration ? (
-                <DropdownMenuItem className="inline-flex w-full gap-2 cursor-pointer" onClick={() => disableLTI()}>
+
+            {row.original.type === 'PJ' &&
+              (row.original.hasMoodleIntegration ? (
+                <DropdownMenuItem
+                  className="inline-flex w-full cursor-pointer gap-2"
+                  onClick={() => disableLTI()}
+                >
                   <GraduationCap className="size-4" />
                   Desativar Integração Moodle
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem className="inline-flex w-full gap-2 cursor-pointer" onClick={() => enableLTI()}>
+                <DropdownMenuItem
+                  className="inline-flex w-full cursor-pointer gap-2"
+                  onClick={() => enableLTI()}
+                >
                   <GraduationCap className="size-4" />
                   Ativar Integração Moodle
                 </DropdownMenuItem>
-              )
-            )}
-            <DropdownMenuItem className="inline-flex w-full gap-2 text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer" onClick={() => {
-              if (window.confirm('Tem certeza que deseja deletar este usuário? Esta ação não pode ser desfeita.')) {
-                deleteUser();
-              }
-            }}>
+              ))}
+            <DropdownMenuItem
+              className="inline-flex w-full cursor-pointer gap-2 text-red-600 focus:bg-red-50 focus:text-red-600"
+              onClick={() => {
+                if (
+                  window.confirm(
+                    'Tem certeza que deseja deletar este usuário? Esta ação não pode ser desfeita.',
+                  )
+                ) {
+                  deleteUser();
+                }
+              }}
+            >
               <Trash2Icon className="size-4" />
               Deletar
             </DropdownMenuItem>

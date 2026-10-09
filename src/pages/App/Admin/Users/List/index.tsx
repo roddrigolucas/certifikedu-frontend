@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   CheckCircleIcon,
   EyeIcon,
+  Key,
   MailIcon,
   Plug,
   Plus,
@@ -12,7 +13,6 @@ import {
   Trash2Icon,
   UserIcon,
   UsersIcon,
-  Key,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -28,6 +28,14 @@ import { GridIconItem } from '@/components/shared/GridIconItem';
 import { Badge } from '@/components/shared/ui/badge';
 import { Button } from '@/components/shared/ui/button';
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/shared/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -35,15 +43,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/shared/ui/dropdown-menu';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shared/ui/tabs';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogTrigger,
-} from '@/components/shared/ui/dialog';
 import { Input } from '@/components/shared/ui/input';
 import {
   Select,
@@ -52,6 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/shared/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shared/ui/tabs';
 
 import useProfile from '@/hooks/core/useProfile';
 import useRequestProcessor from '@/hooks/core/useRequest';
@@ -107,7 +107,8 @@ export default function AdminUsersPage() {
     e.preventDefault();
     if (!createUserData.name.trim()) return toast.error('Informe o nome do usuário.');
     if (!createUserData.email.trim()) return toast.error('Informe o e-mail do usuário.');
-    if (!createUserData.documentNumber.trim()) return toast.error('Informe o documento (CPF ou CNPJ).');
+    if (!createUserData.documentNumber.trim())
+      return toast.error('Informe o documento (CPF ou CNPJ).');
 
     createUser(createUserData, {
       onSuccess: () => {
@@ -190,7 +191,11 @@ export default function AdminUsersPage() {
   // Popula dados cadastrais quando o specificUser mudar
   React.useEffect(() => {
     if (specificUser) {
-      setCadastralData({ name: specificUser.name || '', phone: specificUser.phone || '', document: specificUser.document || '' });
+      setCadastralData({
+        name: specificUser.name || '',
+        phone: specificUser.phone || '',
+        document: specificUser.document || '',
+      });
     }
   }, [specificUser]);
 
@@ -283,44 +288,60 @@ export default function AdminUsersPage() {
     });
   };
 
-  const { mutate: updateUserEmail, isLoading: isUpdatingEmail } = useMutation<unknown, Error, { id: string; email: string }>(
-    ({ id, email }) => AdminService.UpdateUserEmail(id, { email }),
-  );
+  const { mutate: updateUserEmail, isLoading: isUpdatingEmail } = useMutation<
+    unknown,
+    Error,
+    { id: string; email: string }
+  >(({ id, email }) => AdminService.UpdateUserEmail(id, { email }));
 
   const handleUpdateEmail = () => {
     if (!newEmail) return toast.error('Por favor, insira um e-mail válido.');
-    updateUserEmail({ id: userId, email: newEmail }, {
-      onSuccess: () => {
-        toast.success('E-mail alterado com sucesso.');
-        setIsEmailModalOpen(false);
-        setNewEmail('');
-        queryClient.invalidateQueries(['admin', 'users', userStatus]);
+    updateUserEmail(
+      { id: userId, email: newEmail },
+      {
+        onSuccess: () => {
+          toast.success('E-mail alterado com sucesso.');
+          setIsEmailModalOpen(false);
+          setNewEmail('');
+          queryClient.invalidateQueries(['admin', 'users', userStatus]);
+        },
+        onError: (error: any) => {
+          toast.error(`Erro ao atualizar e-mail: ${error}`);
+        },
       },
-      onError: (error: any) => {
-        toast.error(`Erro ao atualizar e-mail: ${error}`);
-      },
-    });
+    );
   };
 
-  const { mutate: updateUserCadastral, isLoading: isUpdatingCadastral } = useMutation<unknown, Error, { id: string; data: { name?: string; phone?: string; document?: string } }>(
-    ({ id, data }) => AdminService.UpdateUserCadastral(id, data),
-  );
+  const { mutate: updateUserCadastral, isLoading: isUpdatingCadastral } = useMutation<
+    unknown,
+    Error,
+    { id: string; data: { name?: string; phone?: string; document?: string } }
+  >(({ id, data }) => AdminService.UpdateUserCadastral(id, data));
 
   const handleUpdateCadastral = () => {
-    updateUserCadastral({ id: userId, data: cadastralData }, {
-      onSuccess: () => {
-        toast.success('Dados cadastrais atualizados com sucesso.');
-        setIsCadastralModalOpen(false);
-        queryClient.invalidateQueries(['admin', 'users', userStatus]);
+    updateUserCadastral(
+      { id: userId, data: cadastralData },
+      {
+        onSuccess: () => {
+          toast.success('Dados cadastrais atualizados com sucesso.');
+          setIsCadastralModalOpen(false);
+          queryClient.invalidateQueries(['admin', 'users', userStatus]);
+        },
+        onError: (error: any) => {
+          toast.error(`Erro ao atualizar dados: ${error}`);
+        },
       },
-      onError: (error: any) => {
-        toast.error(`Erro ao atualizar dados: ${error}`);
-      },
-    });
+    );
   };
 
-  const pfUsers = getAllUsersByStatus?.filter((user) => user.type === 'PF').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
-  const pjUsers = getAllUsersByStatus?.filter((user) => user.type === 'PJ').sort((a,b) => (a.name || '').localeCompare(b.name || '')) ?? [];
+  const pfUsers =
+    getAllUsersByStatus
+      ?.filter((user) => user.type === 'PF')
+      .sort((a, b) => (a.name || '').localeCompare(b.name || '')) ?? [];
+  const pjUsers =
+    getAllUsersByStatus
+      ?.filter((user) => user.type === 'PJ')
+      .sort((a, b) => (a.name || '').localeCompare(b.name || '')) ?? [];
 
   const headerActions = (
     <div className="flex items-center gap-2">
@@ -334,16 +355,24 @@ export default function AdminUsersPage() {
         <DropdownMenuContent>
           <DropdownMenuLabel>Status</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))}>
+          <DropdownMenuItem
+            onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ENABLED }))}
+          >
             <Badge variant="success">Ativo</Badge>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))}>
+          <DropdownMenuItem
+            onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.DISABLED }))}
+          >
             <Badge variant="destructive">Inativo</Badge>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}>
+          <DropdownMenuItem
+            onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.REVIEW }))}
+          >
             <Badge variant="secondary">Em Revisão</Badge>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}>
+          <DropdownMenuItem
+            onClick={() => navigate(buildAdminPageUrl({ status: EAdminStatus.ADMIN }))}
+          >
             <Badge variant="default">Admin</Badge>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -364,7 +393,7 @@ export default function AdminUsersPage() {
             <div>
               <label className="text-xs font-semibold text-slate-700">Tipo de Usuário</label>
               <div className="mt-1 flex gap-4">
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 text-sm">
                   <input
                     type="radio"
                     name="type"
@@ -374,7 +403,7 @@ export default function AdminUsersPage() {
                   />
                   Pessoa Física (PF)
                 </label>
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 text-sm">
                   <input
                     type="radio"
                     name="type"
@@ -415,7 +444,9 @@ export default function AdminUsersPage() {
               <Input
                 placeholder={createUserData.type === 'PJ' ? '00.000.000/0000-00' : '000.000.000-00'}
                 value={createUserData.documentNumber}
-                onChange={(e) => setCreateUserData({ ...createUserData, documentNumber: e.target.value })}
+                onChange={(e) =>
+                  setCreateUserData({ ...createUserData, documentNumber: e.target.value })
+                }
                 required
               />
             </div>
@@ -430,7 +461,9 @@ export default function AdminUsersPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-700">Senha (Opcional - gerada auto se vazia)</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Senha (Opcional - gerada auto se vazia)
+              </label>
               <Input
                 type="password"
                 placeholder="******"
@@ -458,7 +491,11 @@ export default function AdminUsersPage() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setIsCreateUserModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateUserModalOpen(false)}
+              >
                 Cancelar
               </Button>
               <Button type="submit" isLoading={isCreatingUser} variant="success">
@@ -625,8 +662,12 @@ export default function AdminUsersPage() {
                   />
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsEmailModalOpen(false)}>Cancelar</Button>
-                  <Button isLoading={isUpdatingEmail} onClick={handleUpdateEmail}>Confirmar</Button>
+                  <Button variant="outline" onClick={() => setIsEmailModalOpen(false)}>
+                    Cancelar
+                  </Button>
+                  <Button isLoading={isUpdatingEmail} onClick={handleUpdateEmail}>
+                    Confirmar
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -642,7 +683,7 @@ export default function AdminUsersPage() {
                 <DialogHeader>
                   <DialogTitle>Alterar Dados Cadastrais</DialogTitle>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
+                <div className="space-y-4 py-4">
                   <Input
                     placeholder="Nome"
                     value={cadastralData.name}
@@ -656,12 +697,18 @@ export default function AdminUsersPage() {
                   <Input
                     placeholder="Documento (CPF/CNPJ)"
                     value={cadastralData.document}
-                    onChange={(e) => setCadastralData({ ...cadastralData, document: e.target.value })}
+                    onChange={(e) =>
+                      setCadastralData({ ...cadastralData, document: e.target.value })
+                    }
                   />
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsCadastralModalOpen(false)}>Cancelar</Button>
-                  <Button isLoading={isUpdatingCadastral} onClick={handleUpdateCadastral}>Confirmar</Button>
+                  <Button variant="outline" onClick={() => setIsCadastralModalOpen(false)}>
+                    Cancelar
+                  </Button>
+                  <Button isLoading={isUpdatingCadastral} onClick={handleUpdateCadastral}>
+                    Confirmar
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>

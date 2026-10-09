@@ -6,9 +6,9 @@ import {
   IAdmin,
   IAdminAbility,
   IAdminUsers,
+  ICreateUserAdmin,
   IGetAllUserAdmin,
   IRegisterEmailTemplate,
-  ICreateUserAdmin,
   IShowDocumentImageResponse,
   IUpdateCertificateInfo,
   IUpdateEmailTemplate,
@@ -84,8 +84,8 @@ const UpdateUserStatus = async (data: IUpdateUserInfo) => {
 const DeleteUser = async (id: string) => {
   try {
     const response = await authApi.delete(AdminEnpoints.DeleteUser(id));
-    
-return response.data;
+
+    return response.data;
   } catch (error) {
     throw new Error('Error deleting user');
   }
@@ -201,7 +201,12 @@ const DeleteAbility = async (id: string) => {
 
 const ResetUserPassword = async (
   id: string,
-): Promise<{ success: boolean; email?: string; temporaryPassword?: string; emailSent?: boolean }> => {
+): Promise<{
+  success: boolean;
+  email?: string;
+  temporaryPassword?: string;
+  emailSent?: boolean;
+}> => {
   try {
     const response = await authApi.patch(AdminEnpoints.ResetUserPassword(id));
 
@@ -227,7 +232,10 @@ const UpdateUserEmail = async (id: string, data: { email: string }) => {
   }
 };
 
-const UpdateUserCadastral = async (id: string, data: { name?: string; phone?: string; document?: string }) => {
+const UpdateUserCadastral = async (
+  id: string,
+  data: { name?: string; phone?: string; document?: string },
+) => {
   try {
     const response = await authApi.patch(AdminEnpoints.UpdateUserCadastral(id), data);
 
@@ -251,8 +259,8 @@ const CreateUser = async (data: ICreateUserAdmin) => {
 const EnableMoodleLTI = async (id: string) => {
   try {
     const response = await authApi.patch(AdminEnpoints.EnableMoodleLTI(id));
-    
-return response.data;
+
+    return response.data;
   } catch (error) {
     throw new Error('Error enabling Moodle LTI');
   }
@@ -261,8 +269,8 @@ return response.data;
 const DisableMoodleLTI = async (id: string) => {
   try {
     const response = await authApi.patch(AdminEnpoints.DisableMoodleLTI(id));
-    
-return response.data;
+
+    return response.data;
   } catch (error) {
     throw new Error('Error disabling Moodle LTI');
   }

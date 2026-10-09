@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { KeyRound, EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, KeyRound } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import * as z from 'zod';
 
 import { Button } from '@/components/shared/ui/button';
 import {
@@ -22,13 +23,17 @@ import {
   FormMessage,
 } from '@/components/shared/ui/form';
 import { Input } from '@/components/shared/ui/input';
-import { authenticationService } from '@/services/cognito/authentication';
+
 import useAuthentication from '@/hooks/core/useAuthentication';
+
+import { authenticationService } from '@/services/cognito/authentication';
 
 const changePasswordSchema = z
   .object({
     newPassword: z.string().min(6, { message: 'A senha deve ter no mínimo 6 caracteres.' }),
-    confirmPassword: z.string().min(6, { message: 'A confirmação de senha deve ter no mínimo 6 caracteres.' }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: 'A confirmação de senha deve ter no mínimo 6 caracteres.' }),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: 'As senhas não coincidem.',
@@ -80,12 +85,15 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open) {
-        form.reset();
-      }
-      setIsOpen(open);
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          form.reset();
+        }
+        setIsOpen(open);
+      }}
+    >
       <DialogContent className="max-w-md bg-white text-slate-900">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg font-bold text-slate-950">
@@ -117,7 +125,11 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
                         className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:bg-transparent hover:text-slate-600"
                         onClick={() => setShowNewPassword(!showNewPassword)}
                       >
-                        {showNewPassword ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
+                        {showNewPassword ? (
+                          <EyeOffIcon className="size-5" />
+                        ) : (
+                          <EyeIcon className="size-5" />
+                        )}
                       </Button>
                     </div>
                   </FormControl>
@@ -147,7 +159,11 @@ export function ChangePasswordDialog({ isOpen, setIsOpen }: ChangePasswordDialog
                         className="absolute inset-y-[4px] right-1 size-8 text-slate-400 hover:bg-transparent hover:text-slate-600"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
-                        {showConfirmPassword ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
+                        {showConfirmPassword ? (
+                          <EyeOffIcon className="size-5" />
+                        ) : (
+                          <EyeIcon className="size-5" />
+                        )}
                       </Button>
                     </div>
                   </FormControl>

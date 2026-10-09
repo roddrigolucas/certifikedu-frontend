@@ -3,7 +3,7 @@ export function getImageUrl(src: string) {
   if (!src) {
     return '';
   }
-  
+
   // Intercept old AWS URLs and rewrite to local MinIO proxy
   if (src.includes('s3.amazonaws.com')) {
     const pathIndex = src.indexOf('.com/') + 4;
@@ -24,6 +24,6 @@ export function getImageUrl(src: string) {
 
   // All other dynamic image paths (UUIDs, certificates, templates, backgrounds, etc.) come from MinIO
   const cleanPath = src.startsWith('/') ? src.substring(1) : src;
-  
-return `${import.meta.env.VITE_API_URL}/s3/serve-images-plataform-prod/${cleanPath}`;
+
+  return `${import.meta.env.VITE_API_URL}/s3/serve-images-plataform-prod/${cleanPath}`;
 }

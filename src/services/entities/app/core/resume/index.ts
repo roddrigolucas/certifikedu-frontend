@@ -58,7 +58,7 @@ export const ParseResume = async (file: File): Promise<any> => {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     const response = await authApi.post(`${Resumes.Root}/parse`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

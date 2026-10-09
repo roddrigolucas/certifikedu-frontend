@@ -173,12 +173,15 @@ export const ApplicationLayout = ({
       <section className="flex min-h-screen w-full bg-blue-zodiac-950">
         <Aside />
         <div
-          className={cn('min-h-screen w-full flex-1 bg-blue-zodiac-950 p-2 pt-3 md:pl-[332px] md:pr-2 md:py-3', {
-            'bg-blue-zodiac-950': !isLegalPerson,
-            'bg-ecstasy-50': isPJLayout,
-            'bg-slate-950': isAdminSelected,
-            'bg-emerald-950': isCanvas,
-          })}
+          className={cn(
+            'min-h-screen w-full flex-1 bg-blue-zodiac-950 p-2 pt-3 md:pl-[332px] md:pr-2 md:py-3',
+            {
+              'bg-blue-zodiac-950': !isLegalPerson,
+              'bg-ecstasy-50': isPJLayout,
+              'bg-slate-950': isAdminSelected,
+              'bg-emerald-950': isCanvas,
+            },
+          )}
         >
           <motion.div
             className={cn(

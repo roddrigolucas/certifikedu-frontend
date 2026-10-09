@@ -7,8 +7,6 @@ import { pagePaths } from '@/constants/navigation/pagePaths';
 
 import { ApplicationLayout } from '@/components/layouts/app';
 import { Button } from '@/components/shared/ui/button';
-
-import { getImageUrl } from '@/utils/image';
 import {
   Select,
   SelectContent,
@@ -16,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/shared/ui/select';
+
+import { getImageUrl } from '@/utils/image';
 
 export default function AllLearningTrailsPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);

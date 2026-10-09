@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import Cookies from 'js-cookie';
+import { Loader2 } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import { ACCESS_TOKEN_KEY } from '@/constants/storage/cookieKeys';
-import useAuthentication, { getJwtToken } from '@/hooks/core/useAuthentication';
 import { pagePaths } from '@/constants/navigation/pagePaths';
+import { ACCESS_TOKEN_KEY } from '@/constants/storage/cookieKeys';
+
 import { AuthenticationPageLayout } from '@/components/layouts/authentication';
-import { Loader2 } from 'lucide-react';
+
+import useAuthentication, { getJwtToken } from '@/hooks/core/useAuthentication';
 
 export const MoodleAuthPage = () => {
   const navigate = useNavigate();
@@ -47,10 +50,10 @@ export const MoodleAuthPage = () => {
 
   return (
     <AuthenticationPageLayout title="Moodle Auth">
-      <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      <div className="flex size-full flex-col items-center justify-center gap-4">
+        <Loader2 className="size-10 animate-spin text-primary" />
         <h2 className="text-xl font-semibold">Autenticando via Moodle...</h2>
-        <p className="text-muted-foreground text-center text-sm">
+        <p className="text-center text-sm text-muted-foreground">
           Aguarde enquanto configuramos sua sessão.
         </p>
       </div>

@@ -244,14 +244,15 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
   const isUserEnabled =
     profileInfo?.status === EUserStatus.ENABLED || profileInfo?.status === EUserStatus.ADMIN;
 
-  const isNaturalPerson = profileInfo?.type === 'PF' && ((profileInfo?.pjs?.length ?? 0) > 0 || profileInfo?.status === EUserStatus.ADMIN);
+  const isNaturalPerson =
+    profileInfo?.type === 'PF' &&
+    ((profileInfo?.pjs?.length ?? 0) > 0 || profileInfo?.status === EUserStatus.ADMIN);
 
   const balance = profileCredits?.monthSpentCredits ?? 0;
   const total =
     (profileCredits?.certificateCredits ?? 0) + (profileCredits?.additionalCertificateCredits ?? 0);
 
-  const isEnoughBalance =
-    profileInfo?.email === 'r.lucas@fiemg.com.br' ? true : balance < total;
+  const isEnoughBalance = profileInfo?.email === 'r.lucas@fiemg.com.br' ? true : balance < total;
   const isAdmin = profileInfo?.status === EUserStatus.ADMIN;
   const isLegalPerson = profileInfo?.type === 'PJ';
 

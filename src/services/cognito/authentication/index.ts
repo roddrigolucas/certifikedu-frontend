@@ -128,11 +128,16 @@ const syncEmailToDatabase = async (_params: SyncEmailParameters) => {
   return { success: true };
 };
 
-const verifyEmailUpdate = async ({ emailAddress, oldEmailAddress, verificationCode }: VerifyNewEmailParameters) => {
-  const response = await authHttpClient.post(
-    '/auth/change-email/verify',
-    { oldEmail: oldEmailAddress, newEmail: emailAddress, code: verificationCode },
-  );
+const verifyEmailUpdate = async ({
+  emailAddress,
+  oldEmailAddress,
+  verificationCode,
+}: VerifyNewEmailParameters) => {
+  const response = await authHttpClient.post('/auth/change-email/verify', {
+    oldEmail: oldEmailAddress,
+    newEmail: emailAddress,
+    code: verificationCode,
+  });
 
   return response.data;
 };

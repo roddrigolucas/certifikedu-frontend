@@ -7,13 +7,13 @@ import { CertificateShareViewPage } from '@/pages/App/Core/Certificates';
 import CertificateReceivePage from '@/pages/App/Core/Certificates/Receive';
 import CertificateSharePage from '@/pages/App/Core/Certificates/Share';
 import DocumentationCard from '@/pages/App/Core/Docs';
+import { MoodleAuthPage } from '@/pages/Authentication/MoodleAuth';
 import { ResetEmailPage } from '@/pages/Authentication/ResetEmail';
 import { VerifyNewEmailPage } from '@/pages/Authentication/ResetEmail/ResetEmailVerification';
 import { ResetPasswordPage } from '@/pages/Authentication/ResetPassword';
 import { SignInPage } from '@/pages/Authentication/SignIn';
 import SignUpPage from '@/pages/Authentication/SignUp';
 import { UpdatePassword } from '@/pages/Authentication/UpdatePassword';
-import { MoodleAuthPage } from '@/pages/Authentication/MoodleAuth';
 
 import useProfile from '@/hooks/core/useProfile';
 

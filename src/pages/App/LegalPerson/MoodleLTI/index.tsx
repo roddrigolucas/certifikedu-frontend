@@ -1,7 +1,8 @@
 import { useState } from 'react';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { MonitorDotIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { ApplicationLayout } from '@/components/layouts/app';
 import { Button } from '@/components/shared/ui/button';
@@ -12,14 +13,14 @@ import { authApi } from '@/services/api/api';
 
 const fetchConfig = async () => {
   const { data } = await authApi.get('/moodle-lti/config');
-  
-return data;
+
+  return data;
 };
 
 const updateConfig = async (configData: any) => {
   const { data } = await authApi.post('/moodle-lti/config', configData);
-  
-return data;
+
+  return data;
 };
 
 export const MoodleLtiConfigPage = () => {
@@ -86,7 +87,10 @@ export const MoodleLtiConfigPage = () => {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-xl border p-6 shadow-sm">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 rounded-xl border p-6 shadow-sm"
+          >
             <h2 className="text-lg font-semibold">Credenciais da Plataforma (Moodle)</h2>
             <div className="flex flex-col gap-2">
               <Label htmlFor="issuer">URL do Moodle (Issuer)</Label>
@@ -157,7 +161,8 @@ export const MoodleLtiConfigPage = () => {
           <div className="flex flex-col gap-4 rounded-xl border bg-muted/20 p-6 shadow-sm">
             <h2 className="text-lg font-semibold">Configurações para inserir no Moodle</h2>
             <p className="text-sm text-muted-foreground">
-              Utilize as URLs abaixo para cadastrar a CertifikEDU como LTI Tool Provider no seu ambiente Moodle.
+              Utilize as URLs abaixo para cadastrar a CertifikEDU como LTI Tool Provider no seu
+              ambiente Moodle.
             </p>
             <div className="mt-4 flex flex-col gap-4">
               <div>

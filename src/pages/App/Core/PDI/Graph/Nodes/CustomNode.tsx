@@ -19,10 +19,13 @@ const CustomNodeComponent: React.FC<CustomNodeProps> = ({ id, data, isConnectabl
     <>
       <NodeToolbar offset={0} position={Position.Bottom} align={'end'} isVisible>
         <span
-          className={cn('border-2 p-1 inline-flex items-center justify-center size-7 text-lg font-bold', {
-            ' text-red-500': !data.completed,
-            ' text-green-500': data.completed,
-          })}
+          className={cn(
+            'border-2 p-1 inline-flex items-center justify-center size-7 text-lg font-bold',
+            {
+              ' text-red-500': !data.completed,
+              ' text-green-500': data.completed,
+            },
+          )}
         >
           ✓
         </span>

@@ -85,4 +85,3 @@ export interface ICreateUserAdmin {
   type?: 'PF' | 'PJ';
   status?: string;
 }
-

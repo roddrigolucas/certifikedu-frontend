@@ -135,9 +135,7 @@ export function TableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="inline-flex gap-2">
-        {children}
-      </div>
+      <div className="inline-flex gap-2">{children}</div>
     </div>
   );
 }
