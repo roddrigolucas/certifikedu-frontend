@@ -31,6 +31,11 @@ export const legalPersonMenuPaths: Array<MenuItem> = [
     path: pagePaths.authenticated.legalPerson.canvas,
   },
   {
+    icon: MonitorDotIcon,
+    label: 'Integração Moodle',
+    path: pagePaths.authenticated.legalPerson.moodleLti,
+  },
+  {
     icon: CloudCogIcon,
     label: 'Documentação API',
     path: '/docs',

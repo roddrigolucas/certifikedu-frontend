@@ -115,6 +115,7 @@ const authenticatedPaths = {
       edit: '/users/edit/:id',
     },
     canvas: '/canvas',
+    moodleLti: '/moodle-lti',
   },
   corporatePerson: {
     dashboard: '/',

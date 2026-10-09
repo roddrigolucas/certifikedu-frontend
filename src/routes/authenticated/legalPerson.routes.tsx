@@ -10,6 +10,7 @@ import {
 } from '@/pages/App/Core/Certificates';
 import DocumentationCard from '@/pages/App/Core/Docs';
 import CanvasPage from '@/pages/App/LegalPerson/Canvas';
+import { MoodleLtiConfigPage } from '@/pages/App/LegalPerson/MoodleLTI';
 import ProfilePage from '@/pages/App/LegalPerson/Profile';
 import ReportsPage from '@/pages/App/LegalPerson/Reports';
 import LegalPersonRegisterPage from '@/pages/App/LegalPerson/Users/Register';
@@ -48,6 +49,7 @@ export const LegalPersonApplication = () => {
           <Route path={authenticated.legalPerson.reports} element={<ReportsPage />} />
           <Route path={authenticated.legalPerson.profile} element={<ProfilePage />} />
           <Route path={authenticated.legalPerson.canvas} element={<CanvasPage />} />
+          <Route path={authenticated.legalPerson.moodleLti} element={<MoodleLtiConfigPage />} />
           <Route
             index
             path={authenticated.dashboard}
