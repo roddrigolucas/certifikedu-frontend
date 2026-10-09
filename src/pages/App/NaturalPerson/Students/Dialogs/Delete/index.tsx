@@ -51,8 +51,8 @@ export function DeleteStudentDialog({ student, children }: Readonly<Props>) {
 
         return <span data-testId="toast-success">Aluno(s) deletado(s) com sucesso</span>;
       },
-      error: () => {
-        return 'Falha ao deletar aluno(s)';
+      error: (err: Error) => {
+        return `Falha ao deletar aluno(s): ${err?.message ?? ''}`;
       },
       finally: () => {
         queryClient.refetchQueries({ queryKey: ['students', `PJ: ${selectedPJ?.pjId}`] });

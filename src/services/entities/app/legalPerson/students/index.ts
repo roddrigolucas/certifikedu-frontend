@@ -117,8 +117,10 @@ const DeleteStudent = async (pjId: string, id: string, cpfs: string[]) => {
     });
 
     return response.data;
-  } catch (error) {
-    throw new Error('Error deleting student');
+  } catch (error: any) {
+    const apiMsg = error?.response?.data?.message;
+    const msg = Array.isArray(apiMsg) ? apiMsg.join(', ') : apiMsg;
+    throw new Error(msg || error?.message || 'Error deleting student');
   }
 };
 

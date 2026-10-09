@@ -199,13 +199,21 @@ const DeleteAbility = async (id: string) => {
   }
 };
 
-const ResetUserPassword = async (id: string) => {
+const ResetUserPassword = async (
+  id: string,
+): Promise<{ success: boolean; email?: string; temporaryPassword?: string; emailSent?: boolean }> => {
   try {
     const response = await authApi.patch(AdminEnpoints.ResetUserPassword(id));
 
     return response.data;
-  } catch (error) {
-    throw new Error('Error resetting user password');
+  } catch (error: any) {
+    const status = error?.response?.status;
+    const apiMsg = error?.response?.data?.message;
+    const msg = Array.isArray(apiMsg) ? apiMsg.join(', ') : apiMsg;
+    if (status === 404 && !msg) {
+      throw new Error('Endpoint de reset não encontrado no servidor (backend desatualizado).');
+    }
+    throw new Error(msg || error?.message || 'Erro ao resetar a senha do usuário');
   }
 };
 

@@ -227,17 +227,28 @@ export default function AdminUsersPage() {
     );
   };
 
-  const { mutate: resetUserPassword, isLoading: isResettingPassword } = useMutation<unknown, Error, string>(
-    (id) => AdminService.ResetUserPassword(id),
-  );
+  const { mutate: resetUserPassword, isLoading: isResettingPassword } = useMutation<
+    { success: boolean; email?: string; temporaryPassword?: string; emailSent?: boolean },
+    Error,
+    string
+  >((id) => AdminService.ResetUserPassword(id));
 
   const handleResetPassword = () => {
     resetUserPassword(userId, {
-      onSuccess: () => {
-        toast.success('Senha resetada com sucesso.');
+      onSuccess: (data) => {
+        const tempPassword = data?.temporaryPassword;
+        if (tempPassword) {
+          navigator.clipboard?.writeText(tempPassword).catch(() => undefined);
+          toast.success(
+            `Senha resetada! Nova senha temporária de ${data?.email ?? 'usuário'}: ${tempPassword} (copiada para a área de transferência)`,
+            { duration: 30000 },
+          );
+        } else {
+          toast.success('Senha resetada com sucesso.');
+        }
       },
-      onError: (error: any) => {
-        toast.error(`Erro ao resetar senha: ${error}`);
+      onError: (error: Error) => {
+        toast.error(`Erro ao resetar senha: ${error?.message ?? error}`, { duration: 8000 });
       },
     });
   };
